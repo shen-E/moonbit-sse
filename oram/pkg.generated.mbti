@@ -1,0 +1,106 @@
+// Generated using `moon info`, DON'T EDIT IT
+package "shen-E/moonbit-sse/oram"
+
+import {
+  "moonbitlang/core/debug",
+  "shen-E/moonbit-sse/crypto",
+}
+
+// Values
+pub fn oblivious_shuffle(Array[Block], @crypto.Prg) -> Unit
+
+pub fn oblivious_sort(Array[Block], Int, Int, Bool) -> Unit
+
+// Errors
+
+// Types and methods
+pub(all) enum AccessOp {
+  Read
+  Write(Bytes)
+} derive(@debug.Debug)
+
+pub struct AccessResult {
+  data : Bytes
+  path_length : Int
+  stash_size_after : Int
+} derive(@debug.Debug)
+pub fn AccessResult::new(Bytes, Int, Int) -> Self
+
+pub struct AccessTrace {
+  op_type : String
+  path_nodes : Array[Int]
+} derive(@debug.Debug)
+
+pub struct Block {
+  id : Int
+  data : Bytes
+  is_dummy : Bool
+} derive(@debug.Debug)
+pub fn Block::dummy(Int) -> Self
+pub fn Block::real(Int, Bytes) -> Self
+
+pub struct Bucket {
+  blocks : Array[Block]
+} derive(@debug.Debug)
+pub fn Bucket::new(Int, Int) -> Self
+
+pub struct CircuitOramManager {
+  path_oram : PathOram
+}
+pub fn CircuitOramManager::compact_access(Self, AccessOp, Int) -> AccessResult
+pub fn CircuitOramManager::new(Int, Int, Bytes) -> Self
+
+pub struct ObliviousProtocolSimulator {
+  engine : TreeOramEngine
+  traces : Array[AccessTrace]
+}
+pub fn ObliviousProtocolSimulator::audit_trace_security(Self) -> Bool
+pub fn ObliviousProtocolSimulator::new(Int, Int, Bytes) -> Self
+pub fn ObliviousProtocolSimulator::traced_access(Self, String, Int, Bytes?) -> AccessResult
+
+pub struct PathOram {
+  height_l : Int
+  num_leaves : Int
+  capacity_z : Int
+  block_size : Int
+  key : Bytes
+  pos_map : Map[Int, Int]
+  mut stash : Array[(Block, Int)]
+  tree : Array[Bucket]
+  prg : @crypto.Prg
+}
+pub fn PathOram::access(Self, AccessOp, Int) -> AccessResult
+pub fn PathOram::new(Int, Int, Int, Bytes) -> Self
+
+pub struct RecursiveOram {
+  top_oram : PathOram
+  base_oram : PathOram
+  key : Bytes
+}
+pub fn RecursiveOram::access(Self, AccessOp, Int) -> AccessResult
+pub fn RecursiveOram::new(Int, Int, Bytes) -> Self
+
+pub struct SqrtOram {
+  num_elements : Int
+  block_size : Int
+  sqrt_capacity : Int
+  main_memory : Array[Block]
+  mut shelter : Array[Block]
+  key : Bytes
+  prg : @crypto.Prg
+  mut access_count : Int
+}
+pub fn SqrtOram::access(Self, AccessOp, Int) -> Bytes
+pub fn SqrtOram::new(Int, Int, Bytes) -> Self
+pub fn SqrtOram::rebuild_shuffle(Self) -> Unit
+
+pub struct TreeOramEngine {
+  path_oram : PathOram
+}
+pub fn TreeOramEngine::new(Int, Int, Bytes) -> Self
+pub fn TreeOramEngine::read(Self, Int) -> AccessResult
+pub fn TreeOramEngine::write(Self, Int, Bytes) -> AccessResult
+
+// Type aliases
+
+// Traits
