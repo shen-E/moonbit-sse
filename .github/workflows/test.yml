@@ -1,0 +1,32 @@
+name: CI
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  check-and-test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install MoonBit Toolchain
+        uses: chawyehsu/setup-moonbit@v1
+
+      - name: Verify Code Formatting
+        run: moon fmt --check
+
+      - name: Type Check (--deny-warn)
+        run: moon check -d
+
+      - name: Run Complete Test Suite
+        run: moon test
+
+      - name: Check Public Interfaces (mbti)
+        run: moon info
+
+      - name: Validate CLI Executable
+        run: moon run cmd/sse_cli
