@@ -1,0 +1,118 @@
+// Generated using `moon info`, DON'T EDIT IT
+package "shen-E/moonbit-sse/trapdoor"
+
+import {
+  "moonbitlang/core/debug",
+}
+
+// Values
+pub fn blind_search_token(SearchToken, Bytes) -> BlindedToken
+
+pub fn split_ngrams(String, Int) -> Array[String]
+
+pub fn unblind_search_token(BlindedToken, Bytes, UInt) -> SearchToken
+
+// Errors
+
+// Types and methods
+pub struct BlindedToken {
+  blinded_token : Bytes
+  blinding_factor : Bytes
+} derive(@debug.Debug)
+pub fn BlindedToken::new(Bytes, Bytes) -> Self
+pub fn BlindedToken::unblind(Self) -> Bytes
+
+pub struct ConjunctiveDerivator {
+  generator : TrapdoorGenerator
+  cross_key : Bytes
+}
+pub fn ConjunctiveDerivator::compute_cross_tag(Self, String, String) -> Bytes
+pub fn ConjunctiveDerivator::generate_conjunctive_token(Self, String, Array[String], UInt) -> ConjunctiveToken
+pub fn ConjunctiveDerivator::new(TrapdoorGenerator) -> Self
+
+pub struct ConjunctiveToken {
+  primary_token : SearchToken
+  cross_tags : Array[Bytes]
+} derive(@debug.Debug)
+pub fn ConjunctiveToken::get_cross_tags(Self) -> Array[Bytes]
+pub fn ConjunctiveToken::get_primary_token(Self) -> SearchToken
+pub fn ConjunctiveToken::new(SearchToken, Array[Bytes]) -> Self
+
+pub struct ExpiringTrapdoorManager {
+  generator : TrapdoorGenerator
+  auth_key : Bytes
+}
+pub fn ExpiringTrapdoorManager::generate_time_bound_token(Self, String, UInt, UInt) -> TimeBoundToken
+pub fn ExpiringTrapdoorManager::new(TrapdoorGenerator) -> Self
+pub fn ExpiringTrapdoorManager::verify_token(Self, TimeBoundToken, UInt) -> Bool
+
+pub struct FuzzyTrapdoorGenerator {
+  generator : TrapdoorGenerator
+  gram_size : Int
+}
+pub fn FuzzyTrapdoorGenerator::generate_fuzzy_tokens(Self, String, UInt) -> Array[SearchToken]
+pub fn FuzzyTrapdoorGenerator::new(TrapdoorGenerator, Int) -> Self
+
+pub struct HierarchicalTrapdoor {
+  generator : TrapdoorGenerator
+  root_domain : String
+}
+pub fn HierarchicalTrapdoor::derive_scoped_token(Self, Array[String], String, UInt) -> SearchToken
+pub fn HierarchicalTrapdoor::new(TrapdoorGenerator, String) -> Self
+
+pub struct PredicateGenerator {
+  generator : TrapdoorGenerator
+}
+pub fn PredicateGenerator::generate_predicate_token(Self, Array[String], Array[Int], Int, UInt) -> PredicateToken
+pub fn PredicateGenerator::new(TrapdoorGenerator) -> Self
+
+pub struct PredicateToken {
+  weight_vectors : Array[Bytes]
+  threshold : Int
+} derive(@debug.Debug)
+pub fn PredicateToken::new(Array[Bytes], Int) -> Self
+
+pub struct SearchToken {
+  token : Bytes
+  label : Bytes
+  epoch : UInt
+} derive(@debug.Debug)
+pub fn SearchToken::get_epoch(Self) -> UInt
+pub fn SearchToken::get_label(Self) -> Bytes
+pub fn SearchToken::get_token(Self) -> Bytes
+pub fn SearchToken::new(Bytes, Bytes, UInt) -> Self
+
+pub struct TimeBoundToken {
+  token : SearchToken
+  valid_until_epoch : UInt
+  auth_tag : Bytes
+} derive(@debug.Debug)
+pub fn TimeBoundToken::is_expired(Self, UInt) -> Bool
+pub fn TimeBoundToken::new(SearchToken, UInt, Bytes) -> Self
+
+pub struct TrapdoorGenerator {
+  master_key : Bytes
+  search_prf_key : Bytes
+  update_prf_key : Bytes
+  mask_prf_key : Bytes
+}
+pub fn TrapdoorGenerator::derive_keyword_key(Self, String) -> Bytes
+pub fn TrapdoorGenerator::generate_search_token(Self, String, UInt) -> SearchToken
+pub fn TrapdoorGenerator::generate_update_token(Self, String, Int, Int, Int, UInt) -> UpdateToken
+pub fn TrapdoorGenerator::new(Bytes) -> Self
+
+pub struct UpdateToken {
+  addr : Bytes
+  val_mask : Bytes
+  proof : Bytes
+  epoch : UInt
+} derive(@debug.Debug)
+pub fn UpdateToken::get_addr(Self) -> Bytes
+pub fn UpdateToken::get_epoch(Self) -> UInt
+pub fn UpdateToken::get_proof(Self) -> Bytes
+pub fn UpdateToken::get_val_mask(Self) -> Bytes
+pub fn UpdateToken::new(Bytes, Bytes, Bytes, UInt) -> Self
+
+// Type aliases
+
+// Traits
