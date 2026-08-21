@@ -1,0 +1,113 @@
+// Generated using `moon info`, DON'T EDIT IT
+package "shen-E/moonbit-sse/pir"
+
+import {
+  "moonbitlang/core/debug",
+  "shen-E/moonbit-sse/crypto",
+}
+
+// Values
+pub fn comp_pir_server_respond(DatabaseVector, CompPirQuery, Bytes) -> PirResponse
+
+pub fn it_pir_server_respond(DatabaseVector, FixedArray[Bool]) -> PirResponse
+
+// Errors
+
+// Types and methods
+pub struct BatchPirCoordinator {
+  it_client : ItPirClient
+}
+pub fn BatchPirCoordinator::batch_retrieve(Self, DatabaseVector, Array[Int]) -> Array[Bytes]
+pub fn BatchPirCoordinator::new(Int, Int, Bytes) -> Self
+
+pub struct BlindIndexTable {
+  db : DatabaseVector
+  keyword_map : Map[String, Int]
+}
+pub fn BlindIndexTable::add_entry(Self, String, Bytes) -> Unit
+pub fn BlindIndexTable::get_slot(Self, String) -> Int?
+pub fn BlindIndexTable::new(Int) -> Self
+
+pub struct CompPirClient {
+  num_records : Int
+  record_size : Int
+  key : Bytes
+}
+pub fn CompPirClient::generate_query(Self, Int) -> CompPirQuery
+pub fn CompPirClient::new(Int, Int, Bytes) -> Self
+pub fn CompPirClient::reconstruct(Self, PirResponse) -> Bytes
+
+pub struct CompPirQuery {
+  ciphertexts : Array[Bytes]
+} derive(@debug.Debug)
+
+pub struct DatabaseVector {
+  records : Array[Bytes]
+  num_records : Int
+  record_size : Int
+} derive(@debug.Debug)
+pub fn DatabaseVector::new(Array[Bytes], Int) -> Self
+
+pub struct ItPirClient {
+  num_records : Int
+  record_size : Int
+  prg : @crypto.Prg
+}
+pub fn ItPirClient::generate_query(Self, Int) -> TwoServerQuery
+pub fn ItPirClient::new(Int, Int, Bytes) -> Self
+pub fn ItPirClient::reconstruct(Self, PirResponse, PirResponse) -> Bytes
+
+pub struct KeywordPirEngine {
+  it_client : ItPirClient
+  key_slots : Map[String, Int]
+  db : DatabaseVector
+}
+pub fn KeywordPirEngine::get(Self, String) -> Bytes?
+pub fn KeywordPirEngine::new(Int, Int, Bytes) -> Self
+pub fn KeywordPirEngine::put(Self, String, Bytes) -> Unit
+
+pub struct MatrixBatchPirClient {
+  matrix : VectorPirMatrix
+  seed : Bytes
+}
+pub fn MatrixBatchPirClient::generate_batch_query(Self, Array[Int]) -> (MatrixPirPacket, MatrixPirPacket)
+pub fn MatrixBatchPirClient::new(Int, Int, Int, Bytes) -> Self
+
+pub struct MatrixPirPacket {
+  server_id : Int
+  row_masks : Array[FixedArray[Bool]]
+} derive(@debug.Debug)
+pub fn MatrixPirPacket::new(Int, Array[FixedArray[Bool]]) -> Self
+
+pub struct PirMetrics {
+  database_size_bytes : Int
+  query_size_bytes : Int
+  response_size_bytes : Int
+  communication_overhead_ratio : Double
+} derive(@debug.Debug)
+pub fn PirMetrics::new(Int, Int, Int, Double) -> Self
+
+pub struct PirResponse {
+  data : Bytes
+} derive(@debug.Debug)
+pub fn PirResponse::new(Bytes) -> Self
+
+pub struct TwoServerQuery {
+  q1 : FixedArray[Bool]
+  q2 : FixedArray[Bool]
+} derive(@debug.Debug)
+pub fn TwoServerQuery::new(FixedArray[Bool], FixedArray[Bool]) -> Self
+
+pub struct VectorPirMatrix {
+  rows : Int
+  cols : Int
+  matrix : Array[Array[Bytes]]
+  record_size : Int
+}
+pub fn VectorPirMatrix::eval_row_vector(Self, FixedArray[Bool]) -> Array[Bytes]
+pub fn VectorPirMatrix::new(Int, Int, Int) -> Self
+pub fn VectorPirMatrix::set(Self, Int, Int, Bytes) -> Unit
+
+// Type aliases
+
+// Traits
