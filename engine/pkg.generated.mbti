@@ -1,0 +1,168 @@
+// Generated using `moon info`, DON'T EDIT IT
+package "shen-E/moonbit-sse/engine"
+
+import {
+  "moonbitlang/core/debug",
+  "shen-E/moonbit-sse/inverted_index",
+  "shen-E/moonbit-sse/oram",
+  "shen-E/moonbit-sse/pir",
+  "shen-E/moonbit-sse/trapdoor",
+}
+
+// Values
+pub fn format_search_results(@inverted_index.SearchResult) -> String
+
+pub fn parse_cli_command(String) -> CliCommand
+
+pub fn tokenize_text(String) -> Array[String]
+
+// Errors
+
+// Types and methods
+pub struct BenchmarkReport {
+  operation_name : String
+  iterations : Int
+  avg_time_us : Double
+  throughput_ops_sec : Double
+} derive(@debug.Debug)
+pub fn BenchmarkReport::new(String, Int, Double, Double) -> Self
+
+pub struct BinaryBuffer {
+  bytes : Array[Byte]
+}
+pub fn BinaryBuffer::new() -> Self
+pub fn BinaryBuffer::to_bytes(Self) -> Bytes
+pub fn BinaryBuffer::write_bytes(Self, Bytes) -> Unit
+pub fn BinaryBuffer::write_int(Self, Int) -> Unit
+pub fn BinaryBuffer::write_string(Self, String) -> Unit
+
+pub struct CliCommand {
+  action : String
+  args : Array[String]
+} derive(@debug.Debug)
+
+pub struct ComprehensiveBenchRunner {
+  engine : EncryptedDatabase
+  iterations : Int
+}
+pub fn ComprehensiveBenchRunner::bench_document_ingestion(Self) -> BenchmarkReport
+pub fn ComprehensiveBenchRunner::bench_oram_access(Self) -> BenchmarkReport
+pub fn ComprehensiveBenchRunner::bench_pir_retrieval(Self) -> BenchmarkReport
+pub fn ComprehensiveBenchRunner::bench_search_latency(Self) -> BenchmarkReport
+pub fn ComprehensiveBenchRunner::new(Bytes, Int) -> Self
+
+pub struct DatabaseSnapshot {
+  snapshot_id : UInt64
+  num_documents : Int
+  index_entries_count : Int
+  integrity_tag : Bytes
+} derive(@debug.Debug)
+pub fn DatabaseSnapshot::new(UInt64, Int, Int, Bytes) -> Self
+
+pub struct Document {
+  id : Int
+  title : String
+  body : String
+  tags : Array[String]
+  created_at : UInt64
+} derive(@debug.Debug)
+pub fn Document::new(Int, String, String, Array[String], UInt64) -> Self
+
+pub struct EncryptedDatabase {
+  master_key : Bytes
+  trapdoor_gen : @trapdoor.TrapdoorGenerator
+  pir_client : @pir.ItPirClient
+  doc_enc_key : Bytes
+  sse_engine : @inverted_index.BackwardSecureEngine
+  server_index : @inverted_index.ForwardSecureServer
+  oram_storage : @oram.TreeOramEngine
+  doc_store : Map[Int, Bytes]
+}
+pub fn EncryptedDatabase::delete_document(Self, Int, Array[String]) -> Unit
+pub fn EncryptedDatabase::get_document(Self, Int) -> String?
+pub fn EncryptedDatabase::insert_document(Self, Document) -> Unit
+pub fn EncryptedDatabase::new(Bytes) -> Self
+pub fn EncryptedDatabase::search_conjunctive(Self, Array[String]) -> @inverted_index.SearchResult
+pub fn EncryptedDatabase::search_keyword(Self, String) -> @inverted_index.SearchResult
+
+pub struct LeakageAuditor {
+  queries_observed : Map[String, Int]
+}
+pub fn LeakageAuditor::evaluate_leakage(Self) -> LeakageProfile
+pub fn LeakageAuditor::new() -> Self
+pub fn LeakageAuditor::observe_query(Self, String) -> Unit
+
+pub struct LeakageProfile {
+  search_pattern_entropy : Double
+  access_pattern_entropy : Double
+  volume_leakage_bytes : Int
+  forward_secure_verified : Bool
+  backward_secure_verified : Bool
+} derive(@debug.Debug)
+pub fn LeakageProfile::new(Double, Double, Int, Bool, Bool) -> Self
+
+pub struct PerformanceAuditor {
+  total_queries : Int
+  total_inserts : Int
+  total_deletes : Int
+} derive(@debug.Debug)
+pub fn PerformanceAuditor::new() -> Self
+pub fn PerformanceAuditor::record_delete(Self) -> Self
+pub fn PerformanceAuditor::record_insert(Self) -> Self
+pub fn PerformanceAuditor::record_query(Self) -> Self
+
+pub struct QueryOptimizer {
+  high_security_mode : Bool
+}
+pub fn QueryOptimizer::new(Bool) -> Self
+pub fn QueryOptimizer::plan(Self, Array[String]) -> QueryPlan
+
+pub struct QueryPlan {
+  strategy : QueryStrategy
+  target_terms : Array[String]
+  estimated_cost_ms : Int
+  privacy_level : String
+} derive(@debug.Debug)
+pub fn QueryPlan::new(QueryStrategy, Array[String], Int, String) -> Self
+
+pub(all) enum QueryStrategy {
+  SSE_InvertedIndex
+  ORAM_Oblivious
+  PIR_DirectVector
+} derive(@debug.Debug)
+
+pub struct SnapshotManager {
+  master_key : Bytes
+  snapshot_key : Bytes
+}
+pub fn SnapshotManager::create_snapshot(Self, UInt64, EncryptedDatabase) -> DatabaseSnapshot
+pub fn SnapshotManager::new(Bytes) -> Self
+pub fn SnapshotManager::verify_snapshot(Self, DatabaseSnapshot) -> Bool
+
+pub struct SseBenchmarkSuite {
+  master_key : Bytes
+}
+pub fn SseBenchmarkSuite::bench_aes_ctr(Self, Int) -> BenchmarkReport
+pub fn SseBenchmarkSuite::bench_sha256(Self, Int) -> BenchmarkReport
+pub fn SseBenchmarkSuite::new(Bytes) -> Self
+
+pub struct TransactionManager {
+  db : EncryptedDatabase
+  log : Array[TxLogRecord]
+  mut in_tx : Bool
+}
+pub fn TransactionManager::begin(Self) -> Unit
+pub fn TransactionManager::commit(Self) -> Int
+pub fn TransactionManager::new(EncryptedDatabase) -> Self
+pub fn TransactionManager::record_insert(Self, Document) -> Unit
+pub fn TransactionManager::rollback(Self) -> Unit
+
+pub struct TxLogRecord {
+  op_type : String
+  doc_id : Int
+  keyword : String
+} derive(@debug.Debug)
+
+// Type aliases
+
+// Traits
