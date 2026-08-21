@@ -1,0 +1,163 @@
+// Generated using `moon info`, DON'T EDIT IT
+package "shen-E/moonbit-sse/inverted_index"
+
+import {
+  "moonbitlang/core/debug",
+  "shen-E/moonbit-sse/trapdoor",
+}
+
+// Values
+pub fn compress_vbyte(Array[Int]) -> Bytes
+
+pub fn decompress_vbyte(Bytes) -> Array[Int]
+
+pub fn delta_decode(Array[Int]) -> Array[Int]
+
+pub fn delta_encode(Array[Int]) -> Array[Int]
+
+pub fn evaluate_bool_query(ForwardSecureClient, ForwardSecureServer, Array[Int], BoolQuery) -> SearchResult
+
+pub fn search_conjunctive(ForwardSecureClient, ForwardSecureServer, Array[String]) -> SearchResult
+
+pub fn search_disjunctive(ForwardSecureClient, ForwardSecureServer, Array[String]) -> SearchResult
+
+// Errors
+
+// Types and methods
+pub struct BackwardSecureEngine {
+  client : ForwardSecureClient
+  revocation_list : Map[String, Array[Int]]
+}
+pub fn BackwardSecureEngine::delete(Self, ForwardSecureServer, String, Int) -> Unit
+pub fn BackwardSecureEngine::insert(Self, ForwardSecureServer, String, Int) -> Unit
+pub fn BackwardSecureEngine::new(Bytes) -> Self
+pub fn BackwardSecureEngine::search(Self, ForwardSecureServer, String) -> SearchResult
+
+pub struct BloomFilter {
+  bitset : FixedArray[UInt64]
+  num_bits : Int
+  num_hashes : Int
+  key : Bytes
+}
+pub fn BloomFilter::add(Self, String) -> Unit
+pub fn BloomFilter::contains(Self, String) -> Bool
+pub fn BloomFilter::new(Int, Int, Bytes) -> Self
+
+pub(all) enum BoolQuery {
+  Term(String)
+  And(BoolQuery, BoolQuery)
+  Or(BoolQuery, BoolQuery)
+  Not(BoolQuery)
+} derive(@debug.Debug)
+
+pub struct DistributedIndexCoordinator {
+  shards : Array[IndexShard]
+  client : ForwardSecureClient
+  num_shards : Int
+}
+pub fn DistributedIndexCoordinator::insert(Self, String, Int) -> Unit
+pub fn DistributedIndexCoordinator::new(Bytes, Int) -> Self
+pub fn DistributedIndexCoordinator::search_distributed(Self, String) -> SearchResult
+
+pub struct EncryptedEntry {
+  addr : Bytes
+  val : Bytes
+  proof : Bytes
+} derive(@debug.Debug)
+pub fn EncryptedEntry::new(Bytes, Bytes, Bytes) -> Self
+
+pub struct FastEngine {
+  client_states : Map[String, FastState]
+  master_key : Bytes
+}
+pub fn FastEngine::insert(Self, ForwardSecureServer, String, Int) -> Unit
+pub fn FastEngine::new(Bytes) -> Self
+pub fn FastEngine::search(Self, ForwardSecureServer, String) -> SearchResult
+
+pub struct FastState {
+  counter : Int
+  state_key : Bytes
+} derive(@debug.Debug)
+
+pub struct ForwardSecureClient {
+  trapdoor_gen : @trapdoor.TrapdoorGenerator
+  master_key : Bytes
+  state_map : Map[String, Int]
+}
+pub fn ForwardSecureClient::delete(Self, ForwardSecureServer, String, Int) -> Unit
+pub fn ForwardSecureClient::insert(Self, ForwardSecureServer, String, Int) -> Unit
+pub fn ForwardSecureClient::new(Bytes) -> Self
+pub fn ForwardSecureClient::search(Self, ForwardSecureServer, String) -> SearchResult
+
+pub struct ForwardSecureServer {
+  storage : Map[String, EncryptedEntry]
+}
+pub fn ForwardSecureServer::new() -> Self
+
+pub struct IndexShard {
+  shard_id : Int
+  server : ForwardSecureServer
+}
+
+pub struct IndexStats {
+  total_keywords : Int
+  total_entries : Int
+  num_inserts : Int
+  num_deletes : Int
+} derive(@debug.Debug)
+pub fn IndexStats::new(Int, Int, Int, Int) -> Self
+
+pub struct PhraseIndexEngine {
+  client : ForwardSecureClient
+  server : ForwardSecureServer
+}
+pub fn PhraseIndexEngine::index_position(Self, String, Int, Int) -> Unit
+pub fn PhraseIndexEngine::new(Bytes) -> Self
+pub fn PhraseIndexEngine::search_phrase(Self, String, String, Int) -> SearchResult
+
+pub struct PositionalPosting {
+  doc_id : Int
+  position : Int
+} derive(@debug.Debug)
+pub fn PositionalPosting::new(Int, Int) -> Self
+
+pub struct Posting {
+  doc_id : Int
+  score : Int
+  op : Int
+} derive(@debug.Debug)
+pub fn Posting::new(Int, Int, Int) -> Self
+
+pub struct RangeIndex {
+  client : ForwardSecureClient
+  server : ForwardSecureServer
+  field_name : String
+  max_value : Int
+}
+pub fn RangeIndex::insert(Self, Int, Int) -> Unit
+pub fn RangeIndex::new(Bytes, String, Int) -> Self
+pub fn RangeIndex::search_range(Self, Int, Int) -> SearchResult
+
+pub struct SearchResult {
+  doc_ids : Array[Int]
+  scores : Array[Int]
+  num_matches : Int
+} derive(@debug.Debug)
+pub fn SearchResult::new(Array[Int], Array[Int]) -> Self
+
+pub struct StaticSseClient {
+  trapdoor_gen : @trapdoor.TrapdoorGenerator
+  enc_key : Bytes
+}
+pub fn StaticSseClient::build_index(Self, Map[String, Array[Int]]) -> StaticSseServer
+pub fn StaticSseClient::new(Bytes) -> Self
+pub fn StaticSseClient::search(Self, StaticSseServer, String) -> SearchResult
+
+pub struct StaticSseServer {
+  table : Map[String, Bytes]
+}
+pub fn StaticSseServer::new() -> Self
+
+// Type aliases
+
+// Traits
