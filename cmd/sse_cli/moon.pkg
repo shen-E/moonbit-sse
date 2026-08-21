@@ -1,0 +1,10 @@
+import {
+  "shen-E/moonbit-sse/crypto",
+  "shen-E/moonbit-sse/trapdoor",
+  "shen-E/moonbit-sse/inverted_index",
+  "shen-E/moonbit-sse/oram",
+  "shen-E/moonbit-sse/pir",
+  "shen-E/moonbit-sse/engine",
+}
+
+pkgtype(kind: "executable")
