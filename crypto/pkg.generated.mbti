@@ -1,0 +1,120 @@
+// Generated using `moon info`, DON'T EDIT IT
+package "shen-E/moonbit-sse/crypto"
+
+import {
+  "moonbitlang/core/debug",
+}
+
+// Values
+pub fn aes128_cbc_decrypt(Bytes, Bytes, Bytes) -> Bytes?
+
+pub fn aes128_cbc_encrypt(Bytes, Bytes, Bytes) -> Bytes
+
+pub fn aes128_ctr(Bytes, Bytes, Bytes) -> Bytes
+
+pub fn aes128_decrypt_block(Bytes, Bytes) -> Bytes
+
+pub fn aes128_encrypt_block(Bytes, Bytes) -> Bytes
+
+pub fn aes256_decrypt_block(Bytes, Bytes) -> Bytes
+
+pub fn aes256_encrypt_block(Bytes, Bytes) -> Bytes
+
+pub fn bytes_equal_const_time(Bytes, Bytes) -> Bool
+
+pub fn bytes_to_hex(Bytes) -> String
+
+pub fn bytes_to_string(Bytes) -> String
+
+pub fn chacha20_decrypt(Bytes, Bytes, UInt, Bytes) -> Bytes
+
+pub fn chacha20_encrypt(Bytes, Bytes, UInt, Bytes) -> Bytes
+
+pub fn crc32(Bytes) -> UInt
+
+pub fn derive_key(Bytes, String, Int) -> Bytes
+
+pub fn hex_to_bytes(String) -> Bytes
+
+pub fn hmac_sha256(Bytes, Bytes) -> Bytes
+
+pub fn hmac_sha256_hex(Bytes, Bytes) -> String
+
+pub fn keccak_f1600(FixedArray[UInt64]) -> Unit
+
+pub fn pad_pkcs7(Bytes, Int) -> Bytes
+
+pub fn pbkdf2_hmac_sha256(Bytes, Bytes, Int, Int) -> Bytes
+
+pub fn poly1305_auth(Bytes, Bytes) -> Bytes
+
+pub fn sha256(Bytes) -> Bytes
+
+pub fn sha256_hex(Bytes) -> String
+
+pub fn sha256_str(String) -> Bytes
+
+pub fn sha3_256(Bytes) -> Bytes
+
+pub fn string_to_bytes(String) -> Bytes
+
+pub fn uint32_from_be_bytes(Bytes, Int) -> UInt
+
+pub fn uint32_to_be_bytes(UInt) -> Bytes
+
+pub fn uint64_from_be_bytes(Bytes, Int) -> UInt64
+
+pub fn uint64_to_be_bytes(UInt64) -> Bytes
+
+pub fn unpad_pkcs7(Bytes) -> Bytes?
+
+pub fn x25519_scalar_mult(Bytes, Bytes) -> Bytes
+
+pub fn xor_bytes(Bytes, Bytes) -> Bytes
+
+// Errors
+
+// Types and methods
+pub struct Fe25519 {
+  v : FixedArray[UInt64]
+} derive(@debug.Debug)
+pub fn Fe25519::add(Self, Self) -> Self
+pub fn Fe25519::mul(Self, Self) -> Self
+pub fn Fe25519::one() -> Self
+pub fn Fe25519::sub(Self, Self) -> Self
+pub fn Fe25519::zero() -> Self
+
+pub struct Poly1305 {
+  r0 : UInt64
+  r1 : UInt64
+  s0 : UInt64
+  s1 : UInt64
+  mut h0 : UInt64
+  mut h1 : UInt64
+  mut h2 : UInt64
+}
+pub fn Poly1305::new(Bytes) -> Self
+pub fn Poly1305::update_block(Self, Bytes, Bool) -> Unit
+
+pub struct Prg {
+  seed : Bytes
+  mut counter : UInt64
+}
+pub fn Prg::new(Bytes) -> Self
+pub fn Prg::next_bytes(Self, Int) -> Bytes
+pub fn Prg::next_int_range(Self, Int, Int) -> Int
+pub fn Prg::next_uint(Self) -> UInt
+
+pub struct Prp {
+  key : Bytes
+  domain_size : Int
+  radix : Int
+  num_rounds : Int
+}
+pub fn Prp::invert(Self, Int) -> Int
+pub fn Prp::new(Bytes, Int) -> Self
+pub fn Prp::permute(Self, Int) -> Int
+
+// Type aliases
+
+// Traits
