@@ -35,7 +35,7 @@ fn hex_digit(v : Int) -> Char {
 ///|
 /// Convert bytes to lowercase hexadecimal string
 pub fn bytes_to_hex(b : Bytes) -> String {
-  let buf = StringBuilder::new()
+  let buf = StringBuilder()
   for i in 0..<b.length() {
     let byte_val = b[i].to_int()
     let hi = (byte_val >> 4) & 0x0F
@@ -96,7 +96,7 @@ pub fn string_to_bytes(s : String) -> Bytes {
 ///|
 /// Convert Bytes to String assuming ASCII/Latin1 range
 pub fn bytes_to_string(b : Bytes) -> String {
-  let buf = StringBuilder::new()
+  let buf = StringBuilder()
   for i in 0..<b.length() {
     buf.write_char(b[i].to_int().unsafe_to_char())
   }
@@ -149,6 +149,26 @@ pub fn uint64_from_be_bytes(b : Bytes, offset : Int) -> UInt64 {
   let hi = uint32_from_be_bytes(b, offset).to_uint64()
   let lo = uint32_from_be_bytes(b, offset + 4).to_uint64()
   (hi << 32) | lo
+}
+
+///|
+/// Convert 8 bytes from little-endian representation to UInt64.
+fn uint64_from_le_bytes(b : Bytes, offset : Int) -> UInt64 {
+  let mut value = 0UL
+  for i in 0..<8 {
+    value = value | (b[offset + i].to_uint64() << (8 * i))
+  }
+  value
+}
+
+///|
+/// Convert UInt64 to an 8-byte little-endian representation.
+fn uint64_to_le_bytes(v : UInt64) -> Bytes {
+  let out : FixedArray[Byte] = FixedArray::make(8, b'\x00')
+  for i in 0..<8 {
+    out[i] = ((v >> (8 * i)) & 0xFFUL).to_uint().reinterpret_as_int().to_byte()
+  }
+  Bytes::from_array(out)
 }
 
 ///|

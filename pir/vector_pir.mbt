@@ -1,5 +1,5 @@
 ///|
-/// Matrix-Vector PIR Engine for Large Databases
+/// Matrix query helper; not a standalone cryptographic PIR protocol.
 pub struct VectorPirMatrix {
   rows : Int
   cols : Int

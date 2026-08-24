@@ -1,5 +1,5 @@
 ///|
-/// Backward-Secure Dynamic SSE with dual-dictionary deletion revocation filter (Type-II/Type-III)
+/// Dynamic SSE reference with a deletion revocation filter.
 pub struct BackwardSecureEngine {
   client : ForwardSecureClient
   revocation_list : Map[String, Array[Int]]
@@ -13,7 +13,7 @@ pub fn BackwardSecureEngine::new(master_key : Bytes) -> BackwardSecureEngine {
 }
 
 ///|
-/// Insert document into backward-secure index
+/// Insert a document into the revocation-filtered reference index.
 pub fn BackwardSecureEngine::insert(
   self : BackwardSecureEngine,
   server : ForwardSecureServer,

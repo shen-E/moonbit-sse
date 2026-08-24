@@ -22,7 +22,7 @@ pub fn HierarchicalTrapdoor::derive_scoped_token(
   keyword : String,
   epoch : UInt,
 ) -> SearchToken {
-  let buf = StringBuilder::new()
+  let buf = StringBuilder()
   buf.write_string(self.root_domain)
   for i in 0..<path_scopes.length() {
     buf.write_char('/')

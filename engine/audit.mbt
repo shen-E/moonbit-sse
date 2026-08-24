@@ -1,29 +1,19 @@
 ///|
-/// Information Leakage Profile Assessment
+/// Observed query-pattern summary.
 pub struct LeakageProfile {
-  search_pattern_entropy : Double
-  access_pattern_entropy : Double
-  volume_leakage_bytes : Int
-  forward_secure_verified : Bool
-  backward_secure_verified : Bool
+  observed_query_count : Int
+  distinct_query_count : Int
+  repeated_query_count : Int
 } derive(Debug)
 
 ///|
-/// Create new LeakageProfile
+/// Create a query-pattern summary.
 pub fn LeakageProfile::new(
-  search_pattern_entropy : Double,
-  access_pattern_entropy : Double,
-  volume_leakage_bytes : Int,
-  forward_secure_verified : Bool,
-  backward_secure_verified : Bool,
+  observed_query_count : Int,
+  distinct_query_count : Int,
+  repeated_query_count : Int,
 ) -> LeakageProfile {
-  {
-    search_pattern_entropy,
-    access_pattern_entropy,
-    volume_leakage_bytes,
-    forward_secure_verified,
-    backward_secure_verified,
-  }
+  { observed_query_count, distinct_query_count, repeated_query_count }
 }
 
 ///|
@@ -52,11 +42,18 @@ pub fn LeakageAuditor::observe_query(
 }
 
 ///|
-/// Compute leakage assessment metrics
+/// Compute descriptive statistics from the observed query log.
+///
+/// These counters describe the local trace only; they are not a security
+/// proof or an estimate of leakage against an adversary.
 pub fn LeakageAuditor::evaluate_leakage(
   self : LeakageAuditor,
 ) -> LeakageProfile {
-  let num_distinct = self.queries_observed.length()
-  let entropy = if num_distinct > 0 { 0.95 } else { 1.0 }
-  LeakageProfile::new(entropy, 0.0, 0, true, true)
+  let distinct = self.queries_observed.length()
+  let mut observed = 0
+  for _, count in self.queries_observed {
+    observed += count
+  }
+  let repeated = if observed > distinct { observed - distinct } else { 0 }
+  LeakageProfile::new(observed, distinct, repeated)
 }

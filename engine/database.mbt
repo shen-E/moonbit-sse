@@ -24,7 +24,7 @@ pub fn Document::new(
 /// Simple word tokenizer splitting on spaces and punctuation
 pub fn tokenize_text(text : String) -> Array[String] {
   let words : Array[String] = []
-  let buf = StringBuilder::new()
+  let buf = StringBuilder()
   for i in 0..<text.length() {
     let c_code = text[i].to_int()
     let is_alphanumeric = (c_code >= 'a'.to_int() && c_code <= 'z'.to_int()) ||
@@ -108,7 +108,7 @@ pub fn EncryptedDatabase::insert_document(
     kw_set[doc.tags[i]] = true
   }
 
-  // 2. Index keywords into forward/backward secure SSE
+  // 2. Index keywords into the dynamic SSE reference index
   for kw, _ in kw_set {
     self.sse_engine.insert(self.server_index, kw, doc.id)
   }

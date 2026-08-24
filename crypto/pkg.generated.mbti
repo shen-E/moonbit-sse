@@ -1,10 +1,6 @@
 // Generated using `moon info`, DON'T EDIT IT
 package "shen-E/moonbit-sse/crypto"
 
-import {
-  "moonbitlang/core/debug",
-}
-
 // Values
 pub fn aes128_cbc_decrypt(Bytes, Bytes, Bytes) -> Bytes?
 
@@ -46,8 +42,6 @@ pub fn pad_pkcs7(Bytes, Int) -> Bytes
 
 pub fn pbkdf2_hmac_sha256(Bytes, Bytes, Int, Int) -> Bytes
 
-pub fn poly1305_auth(Bytes, Bytes) -> Bytes
-
 pub fn sha256(Bytes) -> Bytes
 
 pub fn sha256_hex(Bytes) -> String
@@ -68,34 +62,11 @@ pub fn uint64_to_be_bytes(UInt64) -> Bytes
 
 pub fn unpad_pkcs7(Bytes) -> Bytes?
 
-pub fn x25519_scalar_mult(Bytes, Bytes) -> Bytes
-
 pub fn xor_bytes(Bytes, Bytes) -> Bytes
 
 // Errors
 
 // Types and methods
-pub struct Fe25519 {
-  v : FixedArray[UInt64]
-} derive(@debug.Debug)
-pub fn Fe25519::add(Self, Self) -> Self
-pub fn Fe25519::mul(Self, Self) -> Self
-pub fn Fe25519::one() -> Self
-pub fn Fe25519::sub(Self, Self) -> Self
-pub fn Fe25519::zero() -> Self
-
-pub struct Poly1305 {
-  r0 : UInt64
-  r1 : UInt64
-  s0 : UInt64
-  s1 : UInt64
-  mut h0 : UInt64
-  mut h1 : UInt64
-  mut h2 : UInt64
-}
-pub fn Poly1305::new(Bytes) -> Self
-pub fn Poly1305::update_block(Self, Bytes, Bool) -> Unit
-
 pub struct Prg {
   seed : Bytes
   mut counter : UInt64

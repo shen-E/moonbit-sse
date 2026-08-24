@@ -1,5 +1,5 @@
 ///|
-/// Forward-Secure Dynamic SSE Client (Sophos/FAST style state-chained scheme)
+/// State-chained dynamic SSE reference client (Sophos/FAST-style shape).
 pub struct ForwardSecureClient {
   trapdoor_gen : @trapdoor.TrapdoorGenerator
   master_key : Bytes
@@ -14,7 +14,7 @@ pub fn ForwardSecureClient::new(master_key : Bytes) -> ForwardSecureClient {
 }
 
 ///|
-/// Forward-Secure Server storing dynamic encrypted inverted entries
+/// Server storing dynamic encrypted inverted entries for the reference demo.
 pub struct ForwardSecureServer {
   storage : Map[String, EncryptedEntry]
 }

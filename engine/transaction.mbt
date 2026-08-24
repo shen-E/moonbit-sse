@@ -7,7 +7,10 @@ pub struct TxLogRecord {
 } derive(Debug)
 
 ///|
-/// Encrypted Database Transaction Manager
+/// In-memory transaction operation-log demo.
+///
+/// Rollback discards the pending log but does not undo mutations already
+/// applied to the database. It is not a durable or ACID transaction manager.
 pub struct TransactionManager {
   db : EncryptedDatabase
   log : Array[TxLogRecord]
@@ -49,7 +52,7 @@ pub fn TransactionManager::commit(self : TransactionManager) -> Int {
 }
 
 ///|
-/// Rollback transaction
+/// Discard the pending operation log without reverting prior mutations.
 pub fn TransactionManager::rollback(self : TransactionManager) -> Unit {
   self.log.clear()
   self.in_tx = false

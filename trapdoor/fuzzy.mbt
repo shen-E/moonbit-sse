@@ -23,7 +23,7 @@ pub fn split_ngrams(s : String, n : Int) -> Array[String] {
     return grams
   }
   for i = 0; i <= s.length() - n; i = i + 1 {
-    let buf = StringBuilder::new()
+    let buf = StringBuilder()
     for j = 0; j < n; j = j + 1 {
       buf.write_char(s[i + j].to_int().unsafe_to_char())
     }

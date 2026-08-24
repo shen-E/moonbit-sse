@@ -100,7 +100,7 @@ pub fn sha3_256(data : Bytes) -> Bytes {
       for j in 0..<8 {
         w_bytes[j] = padded[offset + i * 8 + j]
       }
-      let lane = uint64_from_be_bytes(Bytes::from_array(w_bytes), 0)
+      let lane = uint64_from_le_bytes(Bytes::from_array(w_bytes), 0)
       state[i] = state[i] ^ lane
     }
     keccak_f1600(state)
@@ -108,7 +108,7 @@ pub fn sha3_256(data : Bytes) -> Bytes {
 
   let out : FixedArray[Byte] = FixedArray::make(32, b'\x00')
   for i in 0..<4 {
-    let lane_b = uint64_to_be_bytes(state[i])
+    let lane_b = uint64_to_le_bytes(state[i])
     for j in 0..<8 {
       out[i * 8 + j] = lane_b[j]
     }

@@ -23,7 +23,7 @@ pub fn parse_cli_command(line : String) -> CliCommand {
 ///|
 /// Format search results table
 pub fn format_search_results(res : @inverted_index.SearchResult) -> String {
-  let buf = StringBuilder::new()
+  let buf = StringBuilder()
   buf.write_string("Matches Found: ")
   buf.write_string(res.doc_ids.length().to_string())
   buf.write_char('\n')

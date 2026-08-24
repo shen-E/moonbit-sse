@@ -7,7 +7,7 @@ pub(all) enum QueryStrategy {
 } derive(Debug)
 
 ///|
-/// Optimized Query Execution Plan
+/// Heuristic query execution plan.
 pub struct QueryPlan {
   strategy : QueryStrategy
   target_terms : Array[String]
@@ -27,7 +27,7 @@ pub fn QueryPlan::new(
 }
 
 ///|
-/// Query Optimizer determining optimal trade-off between speed and access pattern leakage
+/// Query optimizer exposing a simple strategy trade-off for the demo.
 pub struct QueryOptimizer {
   high_security_mode : Bool
 }
@@ -49,14 +49,14 @@ pub fn QueryOptimizer::plan(
       QueryStrategy::ORAM_Oblivious,
       terms,
       15,
-      "Full-Oblivious-Zero-Leakage",
+      "ORAM-trace-reference",
     )
   } else if terms.length() == 1 {
     QueryPlan::new(
       QueryStrategy::SSE_InvertedIndex,
       terms,
       2,
-      "Forward-Backward-Secure",
+      "Dynamic-SSE-reference",
     )
   } else {
     QueryPlan::new(

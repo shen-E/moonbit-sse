@@ -15,35 +15,12 @@ test "information-theoretic 2-server pir correctness" {
 
   let client = ItPirClient::new(num_records, record_size, seed)
 
-  // Query target record 3
   let query = client.generate_query(3)
   let resp1 = it_pir_server_respond(db, query.q1)
   let resp2 = it_pir_server_respond(db, query.q2)
 
   let reconstructed = client.reconstruct(resp1, resp2)
   assert_eq(@crypto.bytes_to_string(reconstructed), "record_content_3")
-}
-
-///|
-test "computational pir simulation" {
-  let master_key = @crypto.hex_to_bytes(
-    "1111222233334444555566667777888811112222333344445555666677778888",
-  )
-  let num_records = 5
-  let record_size = 12
-
-  let records : Array[Bytes] = []
-  for i in 0..<num_records {
-    let msg = @crypto.string_to_bytes("payload_000" + i.to_string())
-    records.push(msg)
-  }
-  let db = DatabaseVector::new(records, record_size)
-
-  let client = CompPirClient::new(num_records, record_size, master_key)
-  let query = client.generate_query(2)
-  let resp = comp_pir_server_respond(db, query, master_key)
-  let res = client.reconstruct(resp)
-  assert_eq(@crypto.bytes_to_string(res), "payload_0002")
 }
 
 ///|

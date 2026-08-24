@@ -17,7 +17,9 @@ fn main {
   )
   let db = @engine.EncryptedDatabase::new(master_key)
 
-  println("[2] Indexing Sample Documents into Forward/Backward Secure SSE...")
+  println(
+    "[2] Indexing Sample Documents into the dynamic SSE reference engine...",
+  )
   let doc1 = @engine.Document::new(
     1,
     "MoonBit Modern Toolchain",
@@ -28,14 +30,14 @@ fn main {
   let doc2 = @engine.Document::new(
     2,
     "Searchable Symmetric Encryption",
-    "Dynamic encrypted inverted index protecting query privacy and access patterns",
+    "Dynamic encrypted inverted index for query experiments",
     ["sse", "crypto", "privacy"],
     1700000100UL,
   )
   let doc3 = @engine.Document::new(
     3,
     "Oblivious RAM Path Protocol",
-    "Path ORAM algorithm concealing memory access sequences against eavesdroppers",
+    "Path ORAM-shaped data structure for access-trace experiments",
     ["oram", "privacy", "security"],
     1700000200UL,
   )
@@ -88,7 +90,7 @@ fn main {
   println(
     "    Read payload via ORAM: " + @crypto.bytes_to_string(read_res.data),
   )
-  println("    Security Audit Pass: " + sim.audit_trace_security().to_string())
+  println("    Trace shape check: " + sim.audit_trace_security().to_string())
 
   println("[6] Information-Theoretic 2-Server PIR Protocol:")
   let pir_records : Array[Bytes] = [
@@ -109,6 +111,8 @@ fn main {
   )
 
   println("=================================================================")
-  println("  All cryptographic and privacy routines validated successfully! ")
+  println(
+    "  Demo workflow completed; cryptographic security is not established. ",
+  )
   println("=================================================================")
 }

@@ -7,8 +7,6 @@ import {
 }
 
 // Values
-pub fn comp_pir_server_respond(DatabaseVector, CompPirQuery, Bytes) -> PirResponse
-
 pub fn it_pir_server_respond(DatabaseVector, FixedArray[Bool]) -> PirResponse
 
 // Errors
@@ -27,19 +25,6 @@ pub struct BlindIndexTable {
 pub fn BlindIndexTable::add_entry(Self, String, Bytes) -> Unit
 pub fn BlindIndexTable::get_slot(Self, String) -> Int?
 pub fn BlindIndexTable::new(Int) -> Self
-
-pub struct CompPirClient {
-  num_records : Int
-  record_size : Int
-  key : Bytes
-}
-pub fn CompPirClient::generate_query(Self, Int) -> CompPirQuery
-pub fn CompPirClient::new(Int, Int, Bytes) -> Self
-pub fn CompPirClient::reconstruct(Self, PirResponse) -> Bytes
-
-pub struct CompPirQuery {
-  ciphertexts : Array[Bytes]
-} derive(@debug.Debug)
 
 pub struct DatabaseVector {
   records : Array[Bytes]

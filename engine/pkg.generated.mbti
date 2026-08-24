@@ -19,14 +19,6 @@ pub fn tokenize_text(String) -> Array[String]
 // Errors
 
 // Types and methods
-pub struct BenchmarkReport {
-  operation_name : String
-  iterations : Int
-  avg_time_us : Double
-  throughput_ops_sec : Double
-} derive(@debug.Debug)
-pub fn BenchmarkReport::new(String, Int, Double, Double) -> Self
-
 pub struct BinaryBuffer {
   bytes : Array[Byte]
 }
@@ -40,16 +32,6 @@ pub struct CliCommand {
   action : String
   args : Array[String]
 } derive(@debug.Debug)
-
-pub struct ComprehensiveBenchRunner {
-  engine : EncryptedDatabase
-  iterations : Int
-}
-pub fn ComprehensiveBenchRunner::bench_document_ingestion(Self) -> BenchmarkReport
-pub fn ComprehensiveBenchRunner::bench_oram_access(Self) -> BenchmarkReport
-pub fn ComprehensiveBenchRunner::bench_pir_retrieval(Self) -> BenchmarkReport
-pub fn ComprehensiveBenchRunner::bench_search_latency(Self) -> BenchmarkReport
-pub fn ComprehensiveBenchRunner::new(Bytes, Int) -> Self
 
 pub struct DatabaseSnapshot {
   snapshot_id : UInt64
@@ -93,13 +75,11 @@ pub fn LeakageAuditor::new() -> Self
 pub fn LeakageAuditor::observe_query(Self, String) -> Unit
 
 pub struct LeakageProfile {
-  search_pattern_entropy : Double
-  access_pattern_entropy : Double
-  volume_leakage_bytes : Int
-  forward_secure_verified : Bool
-  backward_secure_verified : Bool
+  observed_query_count : Int
+  distinct_query_count : Int
+  repeated_query_count : Int
 } derive(@debug.Debug)
-pub fn LeakageProfile::new(Double, Double, Int, Bool, Bool) -> Self
+pub fn LeakageProfile::new(Int, Int, Int) -> Self
 
 pub struct PerformanceAuditor {
   total_queries : Int
@@ -138,13 +118,6 @@ pub struct SnapshotManager {
 pub fn SnapshotManager::create_snapshot(Self, UInt64, EncryptedDatabase) -> DatabaseSnapshot
 pub fn SnapshotManager::new(Bytes) -> Self
 pub fn SnapshotManager::verify_snapshot(Self, DatabaseSnapshot) -> Bool
-
-pub struct SseBenchmarkSuite {
-  master_key : Bytes
-}
-pub fn SseBenchmarkSuite::bench_aes_ctr(Self, Int) -> BenchmarkReport
-pub fn SseBenchmarkSuite::bench_sha256(Self, Int) -> BenchmarkReport
-pub fn SseBenchmarkSuite::new(Bytes) -> Self
 
 pub struct TransactionManager {
   db : EncryptedDatabase

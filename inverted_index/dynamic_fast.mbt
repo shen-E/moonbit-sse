@@ -1,12 +1,12 @@
 ///|
-/// FAST Scheme State Structure
+/// FAST-style state structure used by the reference implementation.
 pub struct FastState {
   counter : Int
   state_key : Bytes
 } derive(Debug)
 
 ///|
-/// FAST Scheme Dynamic Forward/Backward Secure Index
+/// FAST-style dynamic index reference.
 pub struct FastEngine {
   client_states : Map[String, FastState]
   master_key : Bytes
@@ -19,7 +19,7 @@ pub fn FastEngine::new(master_key : Bytes) -> FastEngine {
 }
 
 ///|
-/// Insert document into FAST index
+/// Insert a document into the FAST-style reference index.
 pub fn FastEngine::insert(
   self : FastEngine,
   server : ForwardSecureServer,

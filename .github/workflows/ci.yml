@@ -1,32 +1,61 @@
-name: CI
+name: MoonBit check and test
 
 on:
   push:
     branches: [ main ]
   pull_request:
-    branches: [ main ]
+  workflow_dispatch:
+
+permissions:
+  contents: read
 
 jobs:
-  check-and-test:
-    runs-on: ubuntu-latest
+  check:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ ubuntu-latest, macos-latest, windows-latest ]
+    runs-on: ${{ matrix.os }}
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
+        with:
+          persist-credentials: false
 
-      - name: Install MoonBit Toolchain
-        uses: chawyehsu/setup-moonbit@v1
+      - name: Install MoonBit Toolchain (Unix)
+        if: runner.os != 'Windows'
+        shell: bash
+        run: |
+          curl -fsSL https://cli.moonbitlang.com/install/unix.sh | bash
+          echo "$HOME/.moon/bin" >> "$GITHUB_PATH"
+
+      - name: Install MoonBit Toolchain (Windows)
+        if: runner.os == 'Windows'
+        shell: pwsh
+        run: |
+          Set-ExecutionPolicy RemoteSigned -Scope CurrentUser
+          irm https://cli.moonbitlang.com/install/powershell.ps1 | iex
+          "C:\Users\runneradmin\.moon\bin" | Out-File -FilePath $env:GITHUB_PATH -Append
+
+      - name: Verify toolchain
+        run: |
+          moon version --all
+          moon update
 
       - name: Verify Code Formatting
         run: moon fmt --check
 
-      - name: Type Check (--deny-warn)
-        run: moon check -d
+      - name: Type Check (all targets, no warnings)
+        run: moon check --target all --deny-warn
 
-      - name: Run Complete Test Suite
-        run: moon test
+      - name: Run Tests (all targets, no warnings)
+        run: moon test --target all --deny-warn
 
-      - name: Check Public Interfaces (mbti)
-        run: moon info
+      - name: Check Public Interfaces
+        shell: bash
+        run: |
+          moon info
+          git diff --ignore-space-at-eol --exit-code
 
       - name: Validate CLI Executable
         run: moon run cmd/sse_cli

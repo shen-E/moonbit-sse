@@ -1,4 +1,10 @@
 ///|
+/// Bitwise left rotation for ChaCha20's 32-bit words.
+fn rotl32(x : UInt, n : Int) -> UInt {
+  (x << n) | (x >> (32 - n))
+}
+
+///|
 /// ChaCha20 Quarter Round
 fn chacha_quarter_round(
   x : FixedArray[UInt],
@@ -8,13 +14,13 @@ fn chacha_quarter_round(
   d : Int,
 ) -> Unit {
   x[a] = x[a] + x[b]
-  x[d] = rotr(x[d] ^ x[a], 16)
+  x[d] = rotl32(x[d] ^ x[a], 16)
   x[c] = x[c] + x[d]
-  x[b] = rotr(x[b] ^ x[c], 20)
+  x[b] = rotl32(x[b] ^ x[c], 12)
   x[a] = x[a] + x[b]
-  x[d] = rotr(x[d] ^ x[a], 24)
+  x[d] = rotl32(x[d] ^ x[a], 8)
   x[c] = x[c] + x[d]
-  x[b] = rotr(x[b] ^ x[c], 25)
+  x[b] = rotl32(x[b] ^ x[c], 7)
 }
 
 ///|
