@@ -11,13 +11,13 @@ test "information-theoretic 2-server pir correctness" {
     let msg = @crypto.string_to_bytes("record_content_" + i.to_string())
     records.push(msg)
   }
-  let db = DatabaseVector::new(records, record_size)
+  let db = @pir.DatabaseVector::new(records, record_size)
 
-  let client = ItPirClient::new(num_records, record_size, seed)
+  let client = @pir.ItPirClient::new(num_records, record_size, seed)
 
   let query = client.generate_query(3)
-  let resp1 = it_pir_server_respond(db, query.q1)
-  let resp2 = it_pir_server_respond(db, query.q2)
+  let resp1 = @pir.it_pir_server_respond(db, query.q1)
+  let resp2 = @pir.it_pir_server_respond(db, query.q2)
 
   let reconstructed = client.reconstruct(resp1, resp2)
   assert_eq(@crypto.bytes_to_string(reconstructed), "record_content_3")
@@ -36,10 +36,12 @@ test "batch pir multiple retrievals" {
     let msg = @crypto.string_to_bytes("batch_rec" + i.to_string())
     records.push(msg)
   }
-  let db = DatabaseVector::new(records, record_size)
+  let db = @pir.DatabaseVector::new(records, record_size)
 
-  let batch_coord = BatchPirCoordinator::new(num_records, record_size, seed)
-  let targets : Array[Int] = [1, 4, 0]
+  let batch_coord = @pir.BatchPirCoordinator::new(
+    num_records, record_size, seed,
+  )
+  let targets : Array[Int32] = [1, 4, 0]
   let retrieved = batch_coord.batch_retrieve(db, targets)
 
   assert_eq(retrieved.length(), 3)
@@ -50,6 +52,6 @@ test "batch pir multiple retrievals" {
 
 ///|
 test "pir metrics computation" {
-  let m = PirMetrics::new(1024, 64, 16, 0.078)
+  let m = @pir.PirMetrics::new(1024, 64, 16, 0.078)
   assert_eq(m.database_size_bytes, 1024)
 }

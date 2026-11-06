@@ -2,15 +2,15 @@
 /// PIR by Keyword: retrieves content mapped to string keys without revealing key
 pub struct KeywordPirEngine {
   it_client : ItPirClient
-  key_slots : Map[String, Int]
+  key_slots : Map[String, Int32]
   db : DatabaseVector
 }
 
 ///|
 /// Create new KeywordPirEngine
 pub fn KeywordPirEngine::new(
-  num_slots : Int,
-  record_size : Int,
+  num_slots : Int32,
+  record_size : Int32,
   seed : Bytes,
 ) -> KeywordPirEngine {
   let it_client = ItPirClient::new(num_slots, record_size, seed)
@@ -20,7 +20,7 @@ pub fn KeywordPirEngine::new(
     records.push(Bytes::from_array(buf))
   }
   let db = DatabaseVector::new(records, record_size)
-  { it_client, key_slots: Map([]), db }
+  { it_client, key_slots: Map([]), db, }
 }
 
 ///|

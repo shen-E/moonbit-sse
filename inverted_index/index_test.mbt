@@ -3,9 +3,9 @@ test "static sse build and search" {
   let master_key = @crypto.hex_to_bytes(
     "00112233445566778899aabbccddeeff00112233445566778899aabbccddeeff",
   )
-  let client = StaticSseClient::new(master_key)
+  let client = @inverted_index.StaticSseClient::new(master_key)
 
-  let raw_index : Map[String, Array[Int]] = Map([])
+  let raw_index : Map[String, Array[Int32]] = Map([])
   raw_index["privacy"] = [1, 5, 9]
   raw_index["crypto"] = [2, 5, 8]
   raw_index["moonbit"] = [1, 2, 3, 5]
@@ -27,8 +27,8 @@ test "forward and backward secure sse dynamic updates" {
   let master_key = @crypto.hex_to_bytes(
     "1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef",
   )
-  let engine = BackwardSecureEngine::new(master_key)
-  let server = ForwardSecureServer::new()
+  let engine = @inverted_index.BackwardSecureEngine::new(master_key)
+  let server = @inverted_index.ForwardSecureServer::new()
 
   // Insert documents
   engine.insert(server, "search", 101)
@@ -49,8 +49,8 @@ test "multi-keyword conjunctive and disjunctive search" {
   let master_key = @crypto.hex_to_bytes(
     "fedcba9876543210fedcba9876543210fedcba9876543210fedcba9876543210",
   )
-  let client = ForwardSecureClient::new(master_key)
-  let server = ForwardSecureServer::new()
+  let client = @inverted_index.ForwardSecureClient::new(master_key)
+  let server = @inverted_index.ForwardSecureServer::new()
 
   client.insert(server, "database", 1)
   client.insert(server, "database", 2)
@@ -59,12 +59,12 @@ test "multi-keyword conjunctive and disjunctive search" {
 
   // Conjunctive: database AND encrypted -> [2]
   let kws : Array[String] = ["database", "encrypted"]
-  let conj_res = search_conjunctive(client, server, kws)
+  let conj_res = @inverted_index.search_conjunctive(client, server, kws)
   assert_eq(conj_res.doc_ids.length(), 1)
   assert_eq(conj_res.doc_ids[0], 2)
 
   // Disjunctive: database OR encrypted -> [1, 2, 3]
-  let disj_res = search_disjunctive(client, server, kws)
+  let disj_res = @inverted_index.search_disjunctive(client, server, kws)
   assert_eq(disj_res.doc_ids.length(), 3)
 }
 
@@ -73,21 +73,21 @@ test "boolean query evaluation" {
   let master_key = @crypto.hex_to_bytes(
     "abcdef0123456789abcdef0123456789abcdef0123456789abcdef0123456789",
   )
-  let client = ForwardSecureClient::new(master_key)
-  let server = ForwardSecureServer::new()
+  let client = @inverted_index.ForwardSecureClient::new(master_key)
+  let server = @inverted_index.ForwardSecureServer::new()
 
   client.insert(server, "tagA", 10)
   client.insert(server, "tagA", 20)
   client.insert(server, "tagB", 20)
   client.insert(server, "tagB", 30)
 
-  let universe : Array[Int] = [10, 20, 30, 40]
+  let universe : Array[Int32] = [10, 20, 30, 40]
   // Query: tagA AND NOT tagB -> should be [10]
-  let query = BoolQuery::And(
-    BoolQuery::Term("tagA"),
-    BoolQuery::Not(BoolQuery::Term("tagB")),
+  let query = @inverted_index.BoolQuery::And(
+    @inverted_index.BoolQuery::Term("tagA"),
+    @inverted_index.BoolQuery::Not(@inverted_index.BoolQuery::Term("tagB")),
   )
-  let res = evaluate_bool_query(client, server, universe, query)
+  let res = @inverted_index.evaluate_bool_query(client, server, universe, query)
   assert_eq(res.doc_ids.length(), 1)
   assert_eq(res.doc_ids[0], 10)
 }
@@ -97,7 +97,7 @@ test "encrypted range query index" {
   let master_key = @crypto.hex_to_bytes(
     "11223344556677889900aabbccddeeff11223344556677889900aabbccddeeff",
   )
-  let range_idx = RangeIndex::new(master_key, "age", 100)
+  let range_idx = @inverted_index.RangeIndex::new(master_key, "age", 100)
 
   range_idx.insert(1, 25)
   range_idx.insert(2, 30)

@@ -15,83 +15,93 @@ pub fn it_pir_server_respond(DatabaseVector, FixedArray[Bool]) -> PirResponse
 pub struct BatchPirCoordinator {
   it_client : ItPirClient
 }
-pub fn BatchPirCoordinator::batch_retrieve(Self, DatabaseVector, Array[Int]) -> Array[Bytes]
-pub fn BatchPirCoordinator::new(Int, Int, Bytes) -> Self
+pub fn BatchPirCoordinator::batch_retrieve(Self, DatabaseVector, Array[Int32]) -> Array[Bytes]
+pub fn BatchPirCoordinator::new(Int32, Int32, Bytes) -> Self
 
 pub struct BlindIndexTable {
   db : DatabaseVector
-  keyword_map : Map[String, Int]
+  keyword_map : Map[String, Int32]
 }
 pub fn BlindIndexTable::add_entry(Self, String, Bytes) -> Unit
-pub fn BlindIndexTable::get_slot(Self, String) -> Int?
-pub fn BlindIndexTable::new(Int) -> Self
+pub fn BlindIndexTable::get_slot(Self, String) -> Int32?
+pub fn BlindIndexTable::new(Int32) -> Self
 
+#derive(@debug.Debug)
 pub struct DatabaseVector {
   records : Array[Bytes]
-  num_records : Int
-  record_size : Int
-} derive(@debug.Debug)
-pub fn DatabaseVector::new(Array[Bytes], Int) -> Self
+  num_records : Int32
+  record_size : Int32
+}
+pub fn DatabaseVector::new(Array[Bytes], Int32) -> Self
+pub fn DatabaseVector::to_repr(Self) -> @debug.Repr
 
 pub struct ItPirClient {
-  num_records : Int
-  record_size : Int
+  num_records : Int32
+  record_size : Int32
   prg : @crypto.Prg
 }
-pub fn ItPirClient::generate_query(Self, Int) -> TwoServerQuery
-pub fn ItPirClient::new(Int, Int, Bytes) -> Self
+pub fn ItPirClient::generate_query(Self, Int32) -> TwoServerQuery
+pub fn ItPirClient::new(Int32, Int32, Bytes) -> Self
 pub fn ItPirClient::reconstruct(Self, PirResponse, PirResponse) -> Bytes
 
 pub struct KeywordPirEngine {
   it_client : ItPirClient
-  key_slots : Map[String, Int]
+  key_slots : Map[String, Int32]
   db : DatabaseVector
 }
 pub fn KeywordPirEngine::get(Self, String) -> Bytes?
-pub fn KeywordPirEngine::new(Int, Int, Bytes) -> Self
+pub fn KeywordPirEngine::new(Int32, Int32, Bytes) -> Self
 pub fn KeywordPirEngine::put(Self, String, Bytes) -> Unit
 
 pub struct MatrixBatchPirClient {
   matrix : VectorPirMatrix
   seed : Bytes
 }
-pub fn MatrixBatchPirClient::generate_batch_query(Self, Array[Int]) -> (MatrixPirPacket, MatrixPirPacket)
-pub fn MatrixBatchPirClient::new(Int, Int, Int, Bytes) -> Self
+pub fn MatrixBatchPirClient::generate_batch_query(Self, Array[Int32]) -> (MatrixPirPacket, MatrixPirPacket)
+pub fn MatrixBatchPirClient::new(Int32, Int32, Int32, Bytes) -> Self
 
+#derive(@debug.Debug)
 pub struct MatrixPirPacket {
-  server_id : Int
+  server_id : Int32
   row_masks : Array[FixedArray[Bool]]
-} derive(@debug.Debug)
-pub fn MatrixPirPacket::new(Int, Array[FixedArray[Bool]]) -> Self
+}
+pub fn MatrixPirPacket::new(Int32, Array[FixedArray[Bool]]) -> Self
+pub fn MatrixPirPacket::to_repr(Self) -> @debug.Repr
 
+#derive(@debug.Debug)
 pub struct PirMetrics {
-  database_size_bytes : Int
-  query_size_bytes : Int
-  response_size_bytes : Int
+  database_size_bytes : Int32
+  query_size_bytes : Int32
+  response_size_bytes : Int32
   communication_overhead_ratio : Double
-} derive(@debug.Debug)
-pub fn PirMetrics::new(Int, Int, Int, Double) -> Self
+}
+pub fn PirMetrics::new(Int32, Int32, Int32, Double) -> Self
+pub fn PirMetrics::to_repr(Self) -> @debug.Repr
 
+#derive(@debug.Debug)
 pub struct PirResponse {
   data : Bytes
-} derive(@debug.Debug)
+}
 pub fn PirResponse::new(Bytes) -> Self
+pub fn PirResponse::to_repr(Self) -> @debug.Repr
 
+#derive(@debug.Debug)
 pub struct TwoServerQuery {
   q1 : FixedArray[Bool]
   q2 : FixedArray[Bool]
-} derive(@debug.Debug)
+}
 pub fn TwoServerQuery::new(FixedArray[Bool], FixedArray[Bool]) -> Self
+pub fn TwoServerQuery::to_repr(Self) -> @debug.Repr
 
 pub struct VectorPirMatrix {
-  rows : Int
-  cols : Int
+  rows : Int32
+  cols : Int32
   matrix : Array[Array[Bytes]]
-  record_size : Int
+  record_size : Int32
 }
 pub fn VectorPirMatrix::eval_row_vector(Self, FixedArray[Bool]) -> Array[Bytes]
-pub fn VectorPirMatrix::new(Int, Int, Int) -> Self
-pub fn VectorPirMatrix::set(Self, Int, Int, Bytes) -> Unit
+pub fn VectorPirMatrix::new(Int32, Int32, Int32) -> Self
+pub fn VectorPirMatrix::set(Self, Int32, Int32, Bytes) -> Unit
 
 // Type aliases
 

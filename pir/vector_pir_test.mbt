@@ -1,6 +1,6 @@
 ///|
 test "vector pir matrix evaluation" {
-  let mat = VectorPirMatrix::new(2, 2, 8)
+  let mat = @pir.VectorPirMatrix::new(2, 2, 8)
   mat.set(0, 0, @crypto.string_to_bytes("item_0_0"))
   mat.set(0, 1, @crypto.string_to_bytes("item_0_1"))
   mat.set(1, 0, @crypto.string_to_bytes("item_1_0"))

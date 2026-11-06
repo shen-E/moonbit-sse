@@ -1,17 +1,18 @@
 ///|
 /// Multi-Server Block Matrix PIR Query Packet
+#derive(Debug)
 pub struct MatrixPirPacket {
-  server_id : Int
+  server_id : Int32
   row_masks : Array[FixedArray[Bool]]
-} derive(Debug)
+}
 
 ///|
 /// Create new MatrixPirPacket
 pub fn MatrixPirPacket::new(
-  server_id : Int,
+  server_id : Int32,
   row_masks : Array[FixedArray[Bool]],
 ) -> MatrixPirPacket {
-  { server_id, row_masks }
+  { server_id, row_masks, }
 }
 
 ///|
@@ -24,20 +25,20 @@ pub struct MatrixBatchPirClient {
 ///|
 /// Create new MatrixBatchPirClient
 pub fn MatrixBatchPirClient::new(
-  rows : Int,
-  cols : Int,
-  record_size : Int,
+  rows : Int32,
+  cols : Int32,
+  record_size : Int32,
   seed : Bytes,
 ) -> MatrixBatchPirClient {
   let matrix = VectorPirMatrix::new(rows, cols, record_size)
-  { matrix, seed }
+  { matrix, seed, }
 }
 
 ///|
 /// Generate multi-server query packets for a batch of target rows
 pub fn MatrixBatchPirClient::generate_batch_query(
   self : MatrixBatchPirClient,
-  target_rows : Array[Int],
+  target_rows : Array[Int32],
 ) -> (MatrixPirPacket, MatrixPirPacket) {
   let prg = @crypto.Prg::new(self.seed)
   let s1_masks : Array[FixedArray[Bool]] = []
@@ -59,3 +60,6 @@ pub fn MatrixBatchPirClient::generate_batch_query(
 
   (MatrixPirPacket::new(1, s1_masks), MatrixPirPacket::new(2, s2_masks))
 }
+
+///|
+pub extend MatrixPirPacket with @debug.Debug::{to_repr}

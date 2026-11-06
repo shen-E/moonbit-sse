@@ -1,18 +1,18 @@
 ///|
 /// Matrix query helper; not a standalone cryptographic PIR protocol.
 pub struct VectorPirMatrix {
-  rows : Int
-  cols : Int
+  rows : Int32
+  cols : Int32
   matrix : Array[Array[Bytes]]
-  record_size : Int
+  record_size : Int32
 }
 
 ///|
 /// Create new VectorPirMatrix
 pub fn VectorPirMatrix::new(
-  rows : Int,
-  cols : Int,
-  record_size : Int,
+  rows : Int32,
+  cols : Int32,
+  record_size : Int32,
 ) -> VectorPirMatrix {
   let matrix : Array[Array[Bytes]] = []
   for _ in 0..<rows {
@@ -23,15 +23,15 @@ pub fn VectorPirMatrix::new(
     }
     matrix.push(row)
   }
-  { rows, cols, matrix, record_size }
+  { rows, cols, matrix, record_size, }
 }
 
 ///|
 /// Set element at (r, c)
 pub fn VectorPirMatrix::set(
   self : VectorPirMatrix,
-  r : Int,
-  c : Int,
+  r : Int32,
+  c : Int32,
   data : Bytes,
 ) -> Unit {
   self.matrix[r][c] = data

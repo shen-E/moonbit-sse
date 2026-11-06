@@ -1,13 +1,13 @@
 ///|
 /// Path ORAM Implementation (Stefanov et al.)
 pub struct PathOram {
-  height_l : Int
-  num_leaves : Int
-  capacity_z : Int
-  block_size : Int
+  height_l : Int32
+  num_leaves : Int32
+  capacity_z : Int32
+  block_size : Int32
   key : Bytes
-  pos_map : Map[Int, Int]
-  mut stash : Array[(Block, Int)] // (block, assigned_leaf)
+  pos_map : Map[Int32, Int32]
+  mut stash : Array[(Block, Int32)] // (block, assigned_leaf)
   tree : Array[Bucket] // Binary tree of buckets of size 2^(L+1) - 1
   prg : @crypto.Prg
 }
@@ -15,9 +15,9 @@ pub struct PathOram {
 ///|
 /// Initialize Path ORAM with height L, bucket size Z, and block size
 pub fn PathOram::new(
-  height_l : Int,
-  capacity_z : Int,
-  block_size : Int,
+  height_l : Int32,
+  capacity_z : Int32,
+  block_size : Int32,
   master_key : Bytes,
 ) -> PathOram {
   let mut num_leaves = 1
@@ -45,8 +45,8 @@ pub fn PathOram::new(
 
 ///|
 /// Get bucket indices along the path from root (0) to leaf
-fn get_path_indices(height_l : Int, leaf : Int) -> Array[Int] {
-  let path : Array[Int] = []
+fn get_path_indices(height_l : Int32, leaf : Int32) -> Array[Int32] {
+  let path : Array[Int32] = []
   let cur_leaf = leaf
   let num_leaves = 1 << height_l
   let mut node = num_leaves - 1 + cur_leaf
@@ -58,7 +58,7 @@ fn get_path_indices(height_l : Int, leaf : Int) -> Array[Int] {
     node = (node - 1) / 2
   }
   // Reverse to get root-to-leaf order
-  let reversed : Array[Int] = []
+  let reversed : Array[Int32] = []
   for i = path.length() - 1; i >= 0; i = i - 1 {
     reversed.push(path[i])
   }
@@ -67,7 +67,7 @@ fn get_path_indices(height_l : Int, leaf : Int) -> Array[Int] {
 
 ///|
 /// Check if a node is an ancestor of a given leaf
-fn is_node_on_path(height_l : Int, node : Int, leaf : Int) -> Bool {
+fn is_node_on_path(height_l : Int32, node : Int32, leaf : Int32) -> Bool {
   let path = get_path_indices(height_l, leaf)
   for i in 0..<path.length() {
     if path[i] == node {
@@ -82,7 +82,7 @@ fn is_node_on_path(height_l : Int, node : Int, leaf : Int) -> Bool {
 pub fn PathOram::access(
   self : PathOram,
   op : AccessOp,
-  block_id : Int,
+  block_id : Int32,
 ) -> AccessResult {
   let leaf = match self.pos_map.get(block_id) {
     Some(l) => l
@@ -148,7 +148,7 @@ pub fn PathOram::access(
     let new_bucket = Bucket::new(self.capacity_z, self.block_size)
     let mut placed_count = 0
 
-    let remaining_stash : Array[(Block, Int)] = []
+    let remaining_stash : Array[(Block, Int32)] = []
     for s in 0..<self.stash.length() {
       let (blk, blk_leaf) = self.stash[s]
       if placed_count < self.capacity_z &&

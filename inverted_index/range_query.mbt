@@ -4,7 +4,7 @@ pub struct RangeIndex {
   client : ForwardSecureClient
   server : ForwardSecureServer
   field_name : String
-  max_value : Int
+  max_value : Int32
 }
 
 ///|
@@ -12,16 +12,16 @@ pub struct RangeIndex {
 pub fn RangeIndex::new(
   master_key : Bytes,
   field_name : String,
-  max_value : Int,
+  max_value : Int32,
 ) -> RangeIndex {
   let client = ForwardSecureClient::new(master_key)
   let server = ForwardSecureServer::new()
-  { client, server, field_name, max_value }
+  { client, server, field_name, max_value, }
 }
 
 ///|
 /// Generate hierarchical prefix tokens for integer value
-fn generate_prefixes(val : Int, max_val : Int) -> Array[String] {
+fn generate_prefixes(val : Int32, max_val : Int32) -> Array[String] {
   let prefixes : Array[String] = []
   let mut cur_val = val
   let mut cur_max = max_val
@@ -37,7 +37,11 @@ fn generate_prefixes(val : Int, max_val : Int) -> Array[String] {
 
 ///|
 /// Insert a numerical record with hierarchical prefix indices
-pub fn RangeIndex::insert(self : RangeIndex, doc_id : Int, value : Int) -> Unit {
+pub fn RangeIndex::insert(
+  self : RangeIndex,
+  doc_id : Int32,
+  value : Int32,
+) -> Unit {
   let prefixes = generate_prefixes(value, self.max_value)
   for i in 0..<prefixes.length() {
     let kw = self.field_name + ":" + prefixes[i]
@@ -49,10 +53,10 @@ pub fn RangeIndex::insert(self : RangeIndex, doc_id : Int, value : Int) -> Unit 
 /// Range query [min_val, max_val] by expanding prefix terms
 pub fn RangeIndex::search_range(
   self : RangeIndex,
-  min_val : Int,
-  max_val : Int,
+  min_val : Int32,
+  max_val : Int32,
 ) -> SearchResult {
-  let matching_docs : Map[Int, Bool] = Map([])
+  let matching_docs : Map[Int32, Bool] = Map([])
   for v = min_val; v <= max_val; v = v + 1 {
     let exact_kw = self.field_name + ":pfx_0_" + v.to_string()
     let res = self.client.search(self.server, exact_kw)
@@ -61,8 +65,8 @@ pub fn RangeIndex::search_range(
     }
   }
 
-  let final_docs : Array[Int] = []
-  let final_scores : Array[Int] = []
+  let final_docs : Array[Int32] = []
+  let final_scores : Array[Int32] = []
   for doc, _ in matching_docs {
     final_docs.push(doc)
     final_scores.push(100)

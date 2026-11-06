@@ -15,7 +15,7 @@ pub fn ExpiringTrapdoorManager::new(
     "sse-expiring-auth-domain",
     32,
   )
-  { generator, auth_key }
+  { generator, auth_key, }
 }
 
 ///|
@@ -23,8 +23,8 @@ pub fn ExpiringTrapdoorManager::new(
 pub fn ExpiringTrapdoorManager::generate_time_bound_token(
   self : ExpiringTrapdoorManager,
   keyword : String,
-  current_epoch : UInt,
-  valid_until_epoch : UInt,
+  current_epoch : UInt32,
+  valid_until_epoch : UInt32,
 ) -> TimeBoundToken {
   let token = self.generator.generate_search_token(keyword, current_epoch)
   let epoch_limit_bytes = @crypto.uint32_to_be_bytes(valid_until_epoch)
@@ -38,7 +38,7 @@ pub fn ExpiringTrapdoorManager::generate_time_bound_token(
 pub fn ExpiringTrapdoorManager::verify_token(
   self : ExpiringTrapdoorManager,
   token : TimeBoundToken,
-  current_epoch : UInt,
+  current_epoch : UInt32,
 ) -> Bool {
   if token.is_expired(current_epoch) {
     return false

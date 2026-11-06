@@ -17,7 +17,7 @@ pub fn TrapdoorGenerator::new(master_key : Bytes) -> TrapdoorGenerator {
     master_key, "sse-prf-update-domain", 32,
   )
   let mask_prf_key = @crypto.derive_key(master_key, "sse-prf-mask-domain", 32)
-  { master_key, search_prf_key, update_prf_key, mask_prf_key }
+  { master_key, search_prf_key, update_prf_key, mask_prf_key, }
 }
 
 ///|
@@ -34,7 +34,7 @@ pub fn TrapdoorGenerator::derive_keyword_key(
 pub fn TrapdoorGenerator::generate_search_token(
   self : TrapdoorGenerator,
   keyword : String,
-  epoch : UInt,
+  epoch : UInt32,
 ) -> SearchToken {
   let kw_key = self.derive_keyword_key(keyword)
   let epoch_bytes = @crypto.uint32_to_be_bytes(epoch)
@@ -56,10 +56,10 @@ pub fn TrapdoorGenerator::generate_search_token(
 pub fn TrapdoorGenerator::generate_update_token(
   self : TrapdoorGenerator,
   keyword : String,
-  doc_id : Int,
-  op : Int,
-  counter : Int,
-  epoch : UInt,
+  doc_id : Int32,
+  op : Int32,
+  counter : Int32,
+  epoch : UInt32,
 ) -> UpdateToken {
   let kw_key = self.derive_keyword_key(keyword)
   let ctr_bytes = @crypto.uint32_to_be_bytes(counter.reinterpret_as_uint())

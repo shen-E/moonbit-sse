@@ -3,8 +3,8 @@ test "fast dynamic forward secure scheme" {
   let master_key = @crypto.hex_to_bytes(
     "444455556666777788889999aaaa0000444455556666777788889999aaaa0000",
   )
-  let engine = FastEngine::new(master_key)
-  let server = ForwardSecureServer::new()
+  let engine = @inverted_index.FastEngine::new(master_key)
+  let server = @inverted_index.ForwardSecureServer::new()
 
   engine.insert(server, "moonbit", 201)
   engine.insert(server, "moonbit", 202)

@@ -1,17 +1,18 @@
 ///|
 /// Positional Posting for Exact Phrase Searching
+#derive(Debug)
 pub struct PositionalPosting {
-  doc_id : Int
-  position : Int
-} derive(Debug)
+  doc_id : Int32
+  position : Int32
+}
 
 ///|
 /// Create new PositionalPosting
 pub fn PositionalPosting::new(
-  doc_id : Int,
-  position : Int,
+  doc_id : Int32,
+  position : Int32,
 ) -> PositionalPosting {
-  { doc_id, position }
+  { doc_id, position, }
 }
 
 ///|
@@ -26,7 +27,7 @@ pub struct PhraseIndexEngine {
 pub fn PhraseIndexEngine::new(master_key : Bytes) -> PhraseIndexEngine {
   let client = ForwardSecureClient::new(master_key)
   let server = ForwardSecureServer::new()
-  { client, server }
+  { client, server, }
 }
 
 ///|
@@ -34,8 +35,8 @@ pub fn PhraseIndexEngine::new(master_key : Bytes) -> PhraseIndexEngine {
 pub fn PhraseIndexEngine::index_position(
   self : PhraseIndexEngine,
   word : String,
-  doc_id : Int,
-  position : Int,
+  doc_id : Int32,
+  position : Int32,
 ) -> Unit {
   let token_kw = word + "@pos:" + position.to_string()
   self.client.insert(self.server, token_kw, doc_id)
@@ -47,9 +48,9 @@ pub fn PhraseIndexEngine::search_phrase(
   self : PhraseIndexEngine,
   word1 : String,
   word2 : String,
-  max_positions : Int,
+  max_positions : Int32,
 ) -> SearchResult {
-  let matching_docs : Map[Int, Bool] = Map([])
+  let matching_docs : Map[Int32, Bool] = Map([])
 
   for pos = 0; pos < max_positions; pos = pos + 1 {
     let kw1 = word1 + "@pos:" + pos.to_string()
@@ -60,11 +61,14 @@ pub fn PhraseIndexEngine::search_phrase(
     }
   }
 
-  let out_docs : Array[Int] = []
-  let out_scores : Array[Int] = []
+  let out_docs : Array[Int32] = []
+  let out_scores : Array[Int32] = []
   for doc, _ in matching_docs {
     out_docs.push(doc)
     out_scores.push(200)
   }
   SearchResult::new(out_docs, out_scores)
 }
+
+///|
+pub extend PositionalPosting with @debug.Debug::{to_repr}

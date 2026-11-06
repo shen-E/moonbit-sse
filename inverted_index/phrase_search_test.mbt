@@ -3,7 +3,7 @@ test "encrypted phrase search" {
   let master_key = @crypto.hex_to_bytes(
     "6666777788889999aaaa0000111122226666777788889999aaaa000011112222",
   )
-  let engine = PhraseIndexEngine::new(master_key)
+  let engine = @inverted_index.PhraseIndexEngine::new(master_key)
 
   // Document 1 has phrase "searchable encryption" at pos 0 and 1
   engine.index_position("searchable", 1, 0)
@@ -20,7 +20,7 @@ test "encrypted phrase search" {
 
 ///|
 test "positional posting struct" {
-  let p = PositionalPosting::new(1, 42)
+  let p = @inverted_index.PositionalPosting::new(1, 42)
   assert_eq(p.doc_id, 1)
   assert_eq(p.position, 42)
 }

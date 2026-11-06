@@ -1,27 +1,27 @@
 ///|
 /// Information-Theoretic 2-Server PIR Protocol Client (Chor et al.)
 pub struct ItPirClient {
-  num_records : Int
-  record_size : Int
+  num_records : Int32
+  record_size : Int32
   prg : @crypto.Prg
 }
 
 ///|
 /// Create new ItPirClient
 pub fn ItPirClient::new(
-  num_records : Int,
-  record_size : Int,
+  num_records : Int32,
+  record_size : Int32,
   seed : Bytes,
 ) -> ItPirClient {
   let prg = @crypto.Prg::new(seed)
-  { num_records, record_size, prg }
+  { num_records, record_size, prg, }
 }
 
 ///|
 /// Generate query vectors for 2 non-colluding servers to retrieve index target_idx
 pub fn ItPirClient::generate_query(
   self : ItPirClient,
-  target_idx : Int,
+  target_idx : Int32,
 ) -> TwoServerQuery {
   let q1 : FixedArray[Bool] = FixedArray::make(self.num_records, false)
   let q2 : FixedArray[Bool] = FixedArray::make(self.num_records, false)

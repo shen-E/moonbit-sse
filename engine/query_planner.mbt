@@ -1,29 +1,31 @@
 ///|
 /// Privacy Query Execution Strategy
+#derive(Debug)
 pub(all) enum QueryStrategy {
   SSE_InvertedIndex
   ORAM_Oblivious
   PIR_DirectVector
-} derive(Debug)
+}
 
 ///|
 /// Heuristic query execution plan.
+#derive(Debug)
 pub struct QueryPlan {
   strategy : QueryStrategy
   target_terms : Array[String]
-  estimated_cost_ms : Int
+  estimated_cost_ms : Int32
   privacy_level : String
-} derive(Debug)
+}
 
 ///|
 /// Create new QueryPlan
 pub fn QueryPlan::new(
   strategy : QueryStrategy,
   target_terms : Array[String],
-  estimated_cost_ms : Int,
+  estimated_cost_ms : Int32,
   privacy_level : String,
 ) -> QueryPlan {
-  { strategy, target_terms, estimated_cost_ms, privacy_level }
+  { strategy, target_terms, estimated_cost_ms, privacy_level, }
 }
 
 ///|
@@ -67,3 +69,9 @@ pub fn QueryOptimizer::plan(
     )
   }
 }
+
+///|
+pub extend QueryPlan with @debug.Debug::{to_repr}
+
+///|
+pub extend QueryStrategy with @debug.Debug::{to_repr}

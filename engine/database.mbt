@@ -1,23 +1,24 @@
 ///|
 /// Document Model
+#derive(Debug)
 pub struct Document {
-  id : Int
+  id : Int32
   title : String
   body : String
   tags : Array[String]
   created_at : UInt64
-} derive(Debug)
+}
 
 ///|
 /// Create new Document
 pub fn Document::new(
-  id : Int,
+  id : Int32,
   title : String,
   body : String,
   tags : Array[String],
   created_at : UInt64,
 ) -> Document {
-  { id, title, body, tags, created_at }
+  { id, title, body, tags, created_at, }
 }
 
 ///|
@@ -63,7 +64,7 @@ pub struct EncryptedDatabase {
   sse_engine : @inverted_index.BackwardSecureEngine
   server_index : @inverted_index.ForwardSecureServer
   oram_storage : @oram.TreeOramEngine
-  doc_store : Map[Int, Bytes] // Encrypted document payload storage
+  doc_store : Map[Int32, Bytes] // Encrypted document payload storage
 }
 
 ///|
@@ -131,7 +132,7 @@ pub fn EncryptedDatabase::insert_document(
 /// Delete document from index and storage
 pub fn EncryptedDatabase::delete_document(
   self : EncryptedDatabase,
-  doc_id : Int,
+  doc_id : Int32,
   keywords : Array[String],
 ) -> Unit {
   for i in 0..<keywords.length() {
@@ -166,8 +167,8 @@ pub fn EncryptedDatabase::search_conjunctive(
 /// Decrypt document payload
 pub fn EncryptedDatabase::get_document(
   self : EncryptedDatabase,
-  doc_id : Int,
-) -> String? {
+  doc_id : Int32,
+) -> String? raise @crypto.CryptoInputError {
   match self.doc_store.get(doc_id) {
     Some(enc_payload) => {
       let iv = @crypto.derive_key(
@@ -181,3 +182,6 @@ pub fn EncryptedDatabase::get_document(
     None => None
   }
 }
+
+///|
+pub extend Document with @debug.Debug::{to_repr}

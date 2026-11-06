@@ -1,7 +1,7 @@
 ///|
 /// Distributed Partition Shard
 pub struct IndexShard {
-  shard_id : Int
+  shard_id : Int32
   server : ForwardSecureServer
 }
 
@@ -10,26 +10,26 @@ pub struct IndexShard {
 pub struct DistributedIndexCoordinator {
   shards : Array[IndexShard]
   client : ForwardSecureClient
-  num_shards : Int
+  num_shards : Int32
 }
 
 ///|
 /// Create new DistributedIndexCoordinator
 pub fn DistributedIndexCoordinator::new(
   master_key : Bytes,
-  num_shards : Int,
+  num_shards : Int32,
 ) -> DistributedIndexCoordinator {
   let client = ForwardSecureClient::new(master_key)
   let shards : Array[IndexShard] = []
   for i in 0..<num_shards {
-    shards.push({ shard_id: i, server: ForwardSecureServer::new() })
+    shards.push({ shard_id: i, server: ForwardSecureServer::new(), })
   }
-  { shards, client, num_shards }
+  { shards, client, num_shards, }
 }
 
 ///|
 /// Determine shard for document id
-fn get_shard_id(num_shards : Int, doc_id : Int) -> Int {
+fn get_shard_id(num_shards : Int32, doc_id : Int32) -> Int32 {
   let mut s = doc_id % num_shards
   if s < 0 {
     s = s + num_shards
@@ -42,7 +42,7 @@ fn get_shard_id(num_shards : Int, doc_id : Int) -> Int {
 pub fn DistributedIndexCoordinator::insert(
   self : DistributedIndexCoordinator,
   keyword : String,
-  doc_id : Int,
+  doc_id : Int32,
 ) -> Unit {
   let s_id = get_shard_id(self.num_shards, doc_id)
   self.client.insert(self.shards[s_id].server, keyword, doc_id)
@@ -54,8 +54,8 @@ pub fn DistributedIndexCoordinator::search_distributed(
   self : DistributedIndexCoordinator,
   keyword : String,
 ) -> SearchResult {
-  let aggregated_docs : Array[Int] = []
-  let aggregated_scores : Array[Int] = []
+  let aggregated_docs : Array[Int32] = []
+  let aggregated_scores : Array[Int32] = []
 
   for s = 0; s < self.num_shards; s = s + 1 {
     let res = self.client.search(self.shards[s].server, keyword)

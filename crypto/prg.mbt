@@ -8,12 +8,12 @@ pub struct Prg {
 ///|
 /// Create a new PRG initialized with a cryptographically strong seed
 pub fn Prg::new(seed : Bytes) -> Prg {
-  { seed, counter: 0UL }
+  { seed, counter: 0UL, }
 }
 
 ///|
 /// Generate pseudorandom bytes of specified length
-pub fn Prg::next_bytes(self : Prg, len : Int) -> Bytes {
+pub fn Prg::next_bytes(self : Prg, len : Int32) -> Bytes {
   let out : FixedArray[Byte] = FixedArray::make(len, b'\x00')
   let mut generated = 0
   while generated < len {
@@ -31,14 +31,14 @@ pub fn Prg::next_bytes(self : Prg, len : Int) -> Bytes {
 
 ///|
 /// Generate a 32-bit pseudorandom unsigned integer
-pub fn Prg::next_uint(self : Prg) -> UInt {
+pub fn Prg::next_uint(self : Prg) -> UInt32 {
   let b = self.next_bytes(4)
   uint32_from_be_bytes(b, 0)
 }
 
 ///|
 /// Generate a pseudorandom integer in range [min, max)
-pub fn Prg::next_int_range(self : Prg, min : Int, max : Int) -> Int {
+pub fn Prg::next_int_range(self : Prg, min : Int32, max : Int32) -> Int32 {
   if min >= max {
     return min
   }
@@ -49,7 +49,7 @@ pub fn Prg::next_int_range(self : Prg, min : Int, max : Int) -> Int {
 
 ///|
 /// Deterministic Key Derivation Function (HKDF-style expand)
-pub fn derive_key(master_key : Bytes, info : String, out_len : Int) -> Bytes {
+pub fn derive_key(master_key : Bytes, info : String, out_len : Int32) -> Bytes {
   let prg = Prg::new(hmac_sha256(master_key, string_to_bytes(info)))
   prg.next_bytes(out_len)
 }

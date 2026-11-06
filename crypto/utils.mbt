@@ -24,7 +24,7 @@ pub fn xor_bytes(a : Bytes, b : Bytes) -> Bytes {
 
 ///|
 /// Helper to convert a 0-15 nibble to hex character
-fn hex_digit(v : Int) -> Char {
+fn hex_digit(v : Int32) -> Char {
   if v < 10 {
     ('0'.to_int() + v).unsafe_to_char()
   } else {
@@ -48,7 +48,7 @@ pub fn bytes_to_hex(b : Bytes) -> String {
 
 ///|
 /// Convert a character code to hex nibble
-fn hex_code_to_nibble(code : Int) -> Int? {
+fn hex_code_to_nibble(code : Int32) -> Int32? {
   if code >= '0'.to_int() && code <= '9'.to_int() {
     Some(code - '0'.to_int())
   } else if code >= 'a'.to_int() && code <= 'f'.to_int() {
@@ -61,9 +61,10 @@ fn hex_code_to_nibble(code : Int) -> Int? {
 }
 
 ///|
-/// Convert hexadecimal string to bytes
-pub fn hex_to_bytes(s : String) -> Bytes {
+/// Decode hexadecimal, rejecting odd lengths and invalid digits.
+pub fn hex_to_bytes(s : String) -> Bytes raise CryptoInputError {
   let s_len = s.length()
+  guard s_len % 2 == 0 else { raise OddHexLength(s_len) }
   let out_len = s_len / 2
   let out : FixedArray[Byte] = FixedArray::make(out_len, b'\x00')
   for i in 0..<out_len {
@@ -71,11 +72,11 @@ pub fn hex_to_bytes(s : String) -> Bytes {
     let lo_code = s[i * 2 + 1].to_int()
     let hi = match hex_code_to_nibble(hi_code) {
       Some(v) => v
-      None => 0
+      None => raise InvalidHexDigit(i * 2)
     }
     let lo = match hex_code_to_nibble(lo_code) {
       Some(v) => v
-      None => 0
+      None => raise InvalidHexDigit(i * 2 + 1)
     }
     out[i] = ((hi << 4) | lo).to_byte()
   }
@@ -83,29 +84,22 @@ pub fn hex_to_bytes(s : String) -> Bytes {
 }
 
 ///|
-/// Convert UTF-8 / ASCII string to Bytes
+/// Encode a string as UTF-8 without a byte order mark.
 pub fn string_to_bytes(s : String) -> Bytes {
-  let len = s.length()
-  let out : FixedArray[Byte] = FixedArray::make(len, b'\x00')
-  for i in 0..<len {
-    out[i] = (s[i].to_int() & 0xFF).to_byte()
-  }
-  Bytes::from_array(out)
+  @utf8.encode(s)
 }
 
 ///|
-/// Convert Bytes to String assuming ASCII/Latin1 range
-pub fn bytes_to_string(b : Bytes) -> String {
-  let buf = StringBuilder()
-  for i in 0..<b.length() {
-    buf.write_char(b[i].to_int().unsafe_to_char())
+/// Decode UTF-8 strictly, preserving a leading byte order mark.
+pub fn bytes_to_string(b : Bytes) -> String raise CryptoInputError {
+  @utf8.decode(b) catch {
+    _ => raise InvalidUtf8
   }
-  buf.to_string()
 }
 
 ///|
 /// Convert 32-bit unsigned integer to 4-byte big-endian Bytes
-pub fn uint32_to_be_bytes(v : UInt) -> Bytes {
+pub fn uint32_to_be_bytes(v : UInt32) -> Bytes {
   let out : FixedArray[Byte] = FixedArray::make(4, b'\x00')
   let v_int = v.reinterpret_as_int()
   out[0] = ((v_int >> 24) & 0xFF).to_byte()
@@ -117,7 +111,7 @@ pub fn uint32_to_be_bytes(v : UInt) -> Bytes {
 
 ///|
 /// Parse 32-bit unsigned integer from 4-byte big-endian Bytes
-pub fn uint32_from_be_bytes(b : Bytes, offset : Int) -> UInt {
+pub fn uint32_from_be_bytes(b : Bytes, offset : Int32) -> UInt32 {
   let b0 = b[offset].to_int()
   let b1 = b[offset + 1].to_int()
   let b2 = b[offset + 2].to_int()
@@ -145,7 +139,7 @@ pub fn uint64_to_be_bytes(v : UInt64) -> Bytes {
 
 ///|
 /// Parse 64-bit unsigned integer from 8-byte big-endian Bytes
-pub fn uint64_from_be_bytes(b : Bytes, offset : Int) -> UInt64 {
+pub fn uint64_from_be_bytes(b : Bytes, offset : Int32) -> UInt64 {
   let hi = uint32_from_be_bytes(b, offset).to_uint64()
   let lo = uint32_from_be_bytes(b, offset + 4).to_uint64()
   (hi << 32) | lo
@@ -153,7 +147,7 @@ pub fn uint64_from_be_bytes(b : Bytes, offset : Int) -> UInt64 {
 
 ///|
 /// Convert 8 bytes from little-endian representation to UInt64.
-fn uint64_from_le_bytes(b : Bytes, offset : Int) -> UInt64 {
+fn uint64_from_le_bytes(b : Bytes, offset : Int32) -> UInt64 {
   let mut value = 0UL
   for i in 0..<8 {
     value = value | (b[offset + i].to_uint64() << (8 * i))
@@ -173,7 +167,7 @@ fn uint64_to_le_bytes(v : UInt64) -> Bytes {
 
 ///|
 /// PKCS7 Padding
-pub fn pad_pkcs7(data : Bytes, block_size : Int) -> Bytes {
+pub fn pad_pkcs7(data : Bytes, block_size : Int32) -> Bytes {
   let pad_len = block_size - data.length() % block_size
   let total_len = data.length() + pad_len
   let out : FixedArray[Byte] = FixedArray::make(total_len, pad_len.to_byte())

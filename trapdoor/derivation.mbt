@@ -15,7 +15,7 @@ pub fn ConjunctiveDerivator::new(
     "sse-cross-tag-domain",
     32,
   )
-  { generator, cross_key }
+  { generator, cross_key, }
 }
 
 ///|
@@ -37,7 +37,7 @@ pub fn ConjunctiveDerivator::generate_conjunctive_token(
   self : ConjunctiveDerivator,
   primary_kw : String,
   aux_keywords : Array[String],
-  epoch : UInt,
+  epoch : UInt32,
 ) -> ConjunctiveToken {
   let primary_token = self.generator.generate_search_token(primary_kw, epoch)
   let cross_tags : Array[Bytes] = []

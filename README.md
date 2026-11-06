@@ -38,7 +38,15 @@ backward security, obliviousness, or production performance.
 
 ## Quick start
 
-Prerequisite: MoonBit toolchain with `moonc >= v0.10.9`.
+Checked with `moon 0.1.20261104` and `moonc v0.10.20`.
+
+Add the library to a module with `moon add shen-E/moonbit-sse@0.2.0`, then
+import the needed subpackages, such as `shen-E/moonbit-sse/crypto` or
+`shen-E/moonbit-sse/engine`. A consumer of all six packages is in
+[`examples/library`](examples/library/consumer_test.mbt).
+
+Version 0.2.0 adds typed input errors and changes Unicode encoding and snapshot
+tags. See the [migration notes](CHANGELOG.md#migration-from-010) before upgrading.
 
 ```bash
 git clone https://github.com/shen-E/moonbit-sse.git
@@ -74,6 +82,10 @@ CI is defined in `.github/workflows/ci.yml`. It installs MoonBit using the
 official installer, checks all targets, runs all tests, verifies formatting and
 generated public interfaces, and runs the CLI example on Linux, macOS, and
 Windows runners.
+
+Weekly CI repeats these checks with the current toolchain. The manually
+dispatched `Registry consumers` workflow installs a selected published version
+in a fresh temporary module and checks the six library packages and CLI.
 
 ## License
 

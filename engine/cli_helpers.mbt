@@ -1,23 +1,24 @@
 ///|
 /// CLI Command Parser and Formatter
+#derive(Debug)
 pub struct CliCommand {
   action : String
   args : Array[String]
-} derive(Debug)
+}
 
 ///|
 /// Parse string input into CliCommand
 pub fn parse_cli_command(line : String) -> CliCommand {
   let parts = tokenize_text(line)
   if parts.length() == 0 {
-    return { action: "help", args: [] }
+    return { action: "help", args: [], }
   }
   let action = parts[0]
   let args : Array[String] = []
   for i = 1; i < parts.length(); i = i + 1 {
     args.push(parts[i])
   }
-  { action, args }
+  { action, args, }
 }
 
 ///|
@@ -38,3 +39,6 @@ pub fn format_search_results(res : @inverted_index.SearchResult) -> String {
   }
   buf.to_string()
 }
+
+///|
+pub extend CliCommand with @debug.Debug::{to_repr}

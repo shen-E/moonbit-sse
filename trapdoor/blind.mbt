@@ -13,7 +13,7 @@ pub fn blind_search_token(
 pub fn unblind_search_token(
   blinded : BlindedToken,
   label : Bytes,
-  epoch : UInt,
+  epoch : UInt32,
 ) -> SearchToken {
   let unblinded = blinded.unblind()
   SearchToken::new(unblinded, label, epoch)

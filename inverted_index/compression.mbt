@@ -1,6 +1,6 @@
 ///|
 /// Variable-Byte integer compression for encrypted posting lists
-pub fn compress_vbyte(values : Array[Int]) -> Bytes {
+pub fn compress_vbyte(values : Array[Int32]) -> Bytes {
   let buf : Array[Byte] = []
   for i in 0..<values.length() {
     let mut v = values[i]
@@ -20,8 +20,8 @@ pub fn compress_vbyte(values : Array[Int]) -> Bytes {
 
 ///|
 /// Variable-Byte integer decompression
-pub fn decompress_vbyte(data : Bytes) -> Array[Int] {
-  let values : Array[Int] = []
+pub fn decompress_vbyte(data : Bytes) -> Array[Int32] {
+  let values : Array[Int32] = []
   let mut cur_val = 0
   let mut shift = 0
 
@@ -42,8 +42,8 @@ pub fn decompress_vbyte(data : Bytes) -> Array[Int] {
 
 ///|
 /// Delta-encoding for sorted posting lists
-pub fn delta_encode(sorted_ids : Array[Int]) -> Array[Int] {
-  let deltas : Array[Int] = []
+pub fn delta_encode(sorted_ids : Array[Int32]) -> Array[Int32] {
+  let deltas : Array[Int32] = []
   let mut prev = 0
   for i in 0..<sorted_ids.length() {
     let cur = sorted_ids[i]
@@ -55,8 +55,8 @@ pub fn delta_encode(sorted_ids : Array[Int]) -> Array[Int] {
 
 ///|
 /// Delta-decoding
-pub fn delta_decode(deltas : Array[Int]) -> Array[Int] {
-  let ids : Array[Int] = []
+pub fn delta_decode(deltas : Array[Int32]) -> Array[Int32] {
+  let ids : Array[Int32] = []
   let mut accum = 0
   for i in 0..<deltas.length() {
     accum = accum + deltas[i]

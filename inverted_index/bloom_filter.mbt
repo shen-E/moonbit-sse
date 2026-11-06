@@ -2,21 +2,21 @@
 /// Encrypted Bloom Filter for Search Pre-filtering
 pub struct BloomFilter {
   bitset : FixedArray[UInt64]
-  num_bits : Int
-  num_hashes : Int
+  num_bits : Int32
+  num_hashes : Int32
   key : Bytes
 }
 
 ///|
 /// Create new BloomFilter
 pub fn BloomFilter::new(
-  num_bits : Int,
-  num_hashes : Int,
+  num_bits : Int32,
+  num_hashes : Int32,
   key : Bytes,
 ) -> BloomFilter {
   let num_words = (num_bits + 63) / 64
   let bitset : FixedArray[UInt64] = FixedArray::make(num_words, 0UL)
-  { bitset, num_bits, num_hashes, key }
+  { bitset, num_bits, num_hashes, key, }
 }
 
 ///|

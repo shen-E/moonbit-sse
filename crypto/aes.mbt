@@ -48,13 +48,13 @@ let aes_inv_sbox : FixedArray[Byte] = [
 
 ///|
 /// Rcon constants
-let aes_rcon : FixedArray[UInt] = [
+let aes_rcon : FixedArray[UInt32] = [
   0x00U, 0x01U, 0x02U, 0x04U, 0x08U, 0x10U, 0x20U, 0x40U, 0x80U, 0x1bU, 0x36U,
 ]
 
 ///|
 /// SubWord for AES key expansion
-fn aes_sub_word(w : UInt) -> UInt {
+fn aes_sub_word(w : UInt32) -> UInt32 {
   let b0 = aes_sbox[(w.reinterpret_as_int() >> 24) & 0xFF].to_int()
   let b1 = aes_sbox[(w.reinterpret_as_int() >> 16) & 0xFF].to_int()
   let b2 = aes_sbox[(w.reinterpret_as_int() >> 8) & 0xFF].to_int()
@@ -65,14 +65,14 @@ fn aes_sub_word(w : UInt) -> UInt {
 
 ///|
 /// RotWord for AES key expansion
-fn aes_rot_word(w : UInt) -> UInt {
+fn aes_rot_word(w : UInt32) -> UInt32 {
   (w << 8) | (w >> 24)
 }
 
 ///|
 /// AES-128 Key Expansion
-fn aes128_key_expansion(key : Bytes) -> FixedArray[UInt] {
-  let w : FixedArray[UInt] = FixedArray::make(44, 0U)
+fn aes128_key_expansion(key : Bytes) -> FixedArray[UInt32] {
+  let w : FixedArray[UInt32] = FixedArray::make(44, 0U)
   for i in 0..<4 {
     w[i] = uint32_from_be_bytes(key, i * 4)
   }
@@ -89,8 +89,8 @@ fn aes128_key_expansion(key : Bytes) -> FixedArray[UInt] {
 
 ///|
 /// AES-256 Key Expansion
-fn aes256_key_expansion(key : Bytes) -> FixedArray[UInt] {
-  let w : FixedArray[UInt] = FixedArray::make(60, 0U)
+fn aes256_key_expansion(key : Bytes) -> FixedArray[UInt32] {
+  let w : FixedArray[UInt32] = FixedArray::make(60, 0U)
   for i in 0..<8 {
     w[i] = uint32_from_be_bytes(key, i * 4)
   }
@@ -109,7 +109,7 @@ fn aes256_key_expansion(key : Bytes) -> FixedArray[UInt] {
 
 ///|
 /// GF(2^8) multiplication by 2
-fn xtime(b : Int) -> Int {
+fn xtime(b : Int32) -> Int32 {
   if (b & 0x80) != 0 {
     ((b << 1) ^ 0x1b) & 0xFF
   } else {
@@ -119,7 +119,7 @@ fn xtime(b : Int) -> Int {
 
 ///|
 /// GF(2^8) general multiplication
-fn gf_mul(a : Int, b : Int) -> Int {
+fn gf_mul(a : Int32, b : Int32) -> Int32 {
   let mut cur_a = a
   let mut cur_b = b
   let mut p = 0
@@ -140,8 +140,8 @@ fn gf_mul(a : Int, b : Int) -> Int {
 ///|
 /// Encrypt single 16-byte block with expanded key and num_rounds
 fn aes_cipher_block(
-  w : FixedArray[UInt],
-  num_rounds : Int,
+  w : FixedArray[UInt32],
+  num_rounds : Int32,
   block : Bytes,
 ) -> Bytes {
   let state : FixedArray[Byte] = FixedArray::make(16, b'\x00')
@@ -246,8 +246,8 @@ fn aes_cipher_block(
 ///|
 /// Decrypt single 16-byte block with expanded key and num_rounds
 fn aes_inv_cipher_block(
-  w : FixedArray[UInt],
-  num_rounds : Int,
+  w : FixedArray[UInt32],
+  num_rounds : Int32,
   block : Bytes,
 ) -> Bytes {
   let state : FixedArray[Byte] = FixedArray::make(16, b'\x00')

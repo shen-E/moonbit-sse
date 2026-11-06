@@ -1,6 +1,6 @@
 ///|
 /// Oblivious Compare-and-Swap
-fn oblivious_cas(arr : Array[Block], i : Int, j : Int, dir : Bool) -> Unit {
+fn oblivious_cas(arr : Array[Block], i : Int32, j : Int32, dir : Bool) -> Unit {
   let bi = arr[i]
   let bj = arr[j]
   let should_swap = if dir { bi.id > bj.id } else { bi.id < bj.id }
@@ -14,8 +14,8 @@ fn oblivious_cas(arr : Array[Block], i : Int, j : Int, dir : Bool) -> Unit {
 /// Bitonic Merge Network
 fn bitonic_merge(
   arr : Array[Block],
-  low : Int,
-  count : Int,
+  low : Int32,
+  count : Int32,
   dir : Bool,
 ) -> Unit {
   if count > 1 {
@@ -32,8 +32,8 @@ fn bitonic_merge(
 /// Oblivious Bitonic Sort
 pub fn oblivious_sort(
   arr : Array[Block],
-  low : Int,
-  count : Int,
+  low : Int32,
+  count : Int32,
   dir : Bool,
 ) -> Unit {
   if count > 1 {
