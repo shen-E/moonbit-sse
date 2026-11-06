@@ -1,9 +1,10 @@
 ///|
 /// FAST-style state structure used by the reference implementation.
+#derive(Debug)
 pub struct FastState {
-  counter : Int
+  counter : Int32
   state_key : Bytes
-} derive(Debug)
+}
 
 ///|
 /// FAST-style dynamic index reference.
@@ -15,7 +16,7 @@ pub struct FastEngine {
 ///|
 /// Create new FastEngine
 pub fn FastEngine::new(master_key : Bytes) -> FastEngine {
-  { client_states: Map([]), master_key }
+  { client_states: Map([]), master_key, }
 }
 
 ///|
@@ -24,7 +25,7 @@ pub fn FastEngine::insert(
   self : FastEngine,
   server : ForwardSecureServer,
   keyword : String,
-  doc_id : Int,
+  doc_id : Int32,
 ) -> Unit {
   let cur_c = match self.client_states.get(keyword) {
     Some(s) => s.counter
@@ -39,7 +40,7 @@ pub fn FastEngine::insert(
     k_w,
     @crypto.uint32_to_be_bytes(new_c.reinterpret_as_uint()),
   )
-  self.client_states[keyword] = { counter: new_c, state_key }
+  self.client_states[keyword] = { counter: new_c, state_key, }
 
   let addr = @crypto.hmac_sha256(
     state_key,
@@ -82,8 +83,8 @@ pub fn FastEngine::search(
     self.master_key,
     @crypto.string_to_bytes(keyword),
   )
-  let docs : Array[Int] = []
-  let scores : Array[Int] = []
+  let docs : Array[Int32] = []
+  let scores : Array[Int32] = []
 
   for c = 1; c <= max_c; c = c + 1 {
     let state_key = @crypto.hmac_sha256(
@@ -111,3 +112,6 @@ pub fn FastEngine::search(
 
   SearchResult::new(docs, scores)
 }
+
+///|
+pub extend FastState with @debug.Debug::{to_repr}

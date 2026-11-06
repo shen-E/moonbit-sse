@@ -1,17 +1,18 @@
 ///|
 /// Inner-Product Predicate Vector Token
+#derive(Debug)
 pub struct PredicateToken {
   weight_vectors : Array[Bytes]
-  threshold : Int
-} derive(Debug)
+  threshold : Int32
+}
 
 ///|
 /// Create new PredicateToken
 pub fn PredicateToken::new(
   weight_vectors : Array[Bytes],
-  threshold : Int,
+  threshold : Int32,
 ) -> PredicateToken {
-  { weight_vectors, threshold }
+  { weight_vectors, threshold, }
 }
 
 ///|
@@ -33,9 +34,9 @@ pub fn PredicateGenerator::new(
 pub fn PredicateGenerator::generate_predicate_token(
   self : PredicateGenerator,
   attributes : Array[String],
-  weights : Array[Int],
-  threshold : Int,
-  epoch : UInt,
+  weights : Array[Int32],
+  threshold : Int32,
+  epoch : UInt32,
 ) -> PredicateToken {
   let weight_vectors : Array[Bytes] = []
   for i in 0..<attributes.length() {
@@ -49,3 +50,6 @@ pub fn PredicateGenerator::generate_predicate_token(
   }
   PredicateToken::new(weight_vectors, threshold)
 }
+
+///|
+pub extend PredicateToken with @debug.Debug::{to_repr}

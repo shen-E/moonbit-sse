@@ -2,21 +2,21 @@
 /// Fuzzy N-Gram Keyword Trapdoor Generator
 pub struct FuzzyTrapdoorGenerator {
   generator : TrapdoorGenerator
-  gram_size : Int
+  gram_size : Int32
 }
 
 ///|
 /// Create new FuzzyTrapdoorGenerator
 pub fn FuzzyTrapdoorGenerator::new(
   generator : TrapdoorGenerator,
-  gram_size : Int,
+  gram_size : Int32,
 ) -> FuzzyTrapdoorGenerator {
-  { generator, gram_size }
+  { generator, gram_size, }
 }
 
 ///|
 /// Split keyword into n-grams
-pub fn split_ngrams(s : String, n : Int) -> Array[String] {
+pub fn split_ngrams(s : String, n : Int32) -> Array[String] {
   let grams : Array[String] = []
   if s.length() < n {
     grams.push(s)
@@ -37,7 +37,7 @@ pub fn split_ngrams(s : String, n : Int) -> Array[String] {
 pub fn FuzzyTrapdoorGenerator::generate_fuzzy_tokens(
   self : FuzzyTrapdoorGenerator,
   keyword : String,
-  epoch : UInt,
+  epoch : UInt32,
 ) -> Array[SearchToken] {
   let grams = split_ngrams(keyword, self.gram_size)
   let tokens : Array[SearchToken] = []

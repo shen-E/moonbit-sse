@@ -11,7 +11,7 @@ let keccak_rc : FixedArray[UInt64] = [
 
 ///|
 /// 64-bit Left Rotation
-fn rotl64(x : UInt64, n : Int) -> UInt64 {
+fn rotl64(x : UInt64, n : Int32) -> UInt64 {
   (x << n) | (x >> (64 - n))
 }
 

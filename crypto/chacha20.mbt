@@ -1,17 +1,17 @@
 ///|
 /// Bitwise left rotation for ChaCha20's 32-bit words.
-fn rotl32(x : UInt, n : Int) -> UInt {
+fn rotl32(x : UInt32, n : Int32) -> UInt32 {
   (x << n) | (x >> (32 - n))
 }
 
 ///|
 /// ChaCha20 Quarter Round
 fn chacha_quarter_round(
-  x : FixedArray[UInt],
-  a : Int,
-  b : Int,
-  c : Int,
-  d : Int,
+  x : FixedArray[UInt32],
+  a : Int32,
+  b : Int32,
+  c : Int32,
+  d : Int32,
 ) -> Unit {
   x[a] = x[a] + x[b]
   x[d] = rotl32(x[d] ^ x[a], 16)
@@ -25,8 +25,8 @@ fn chacha_quarter_round(
 
 ///|
 /// ChaCha20 block function (RFC 8439)
-fn chacha20_block(key : Bytes, nonce : Bytes, counter : UInt) -> Bytes {
-  let state : FixedArray[UInt] = [
+fn chacha20_block(key : Bytes, nonce : Bytes, counter : UInt32) -> Bytes {
+  let state : FixedArray[UInt32] = [
     0x61707865U, 0x3320646eU, 0x79622d32U, 0x6b206574U, 0U, 0U, 0U, 0U, 0U, 0U, 0U,
     0U, 0U, 0U, 0U, 0U,
   ]
@@ -52,7 +52,7 @@ fn chacha20_block(key : Bytes, nonce : Bytes, counter : UInt) -> Bytes {
     state[13 + i] = ((b3 << 24) | (b2 << 16) | (b1 << 8) | b0).reinterpret_as_uint()
   }
 
-  let working : FixedArray[UInt] = FixedArray::make(16, 0U)
+  let working : FixedArray[UInt32] = FixedArray::make(16, 0U)
   for i in 0..<16 {
     working[i] = state[i]
   }
@@ -86,7 +86,7 @@ fn chacha20_block(key : Bytes, nonce : Bytes, counter : UInt) -> Bytes {
 pub fn chacha20_encrypt(
   key : Bytes,
   nonce : Bytes,
-  counter : UInt,
+  counter : UInt32,
   data : Bytes,
 ) -> Bytes {
   let out : FixedArray[Byte] = FixedArray::make(data.length(), b'\x00')
@@ -112,7 +112,7 @@ pub fn chacha20_encrypt(
 pub fn chacha20_decrypt(
   key : Bytes,
   nonce : Bytes,
-  counter : UInt,
+  counter : UInt32,
   data : Bytes,
 ) -> Bytes {
   chacha20_encrypt(key, nonce, counter, data)

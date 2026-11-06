@@ -1,27 +1,29 @@
 ///|
 /// Database partitioned into N records of uniform block_size
+#derive(Debug)
 pub struct DatabaseVector {
   records : Array[Bytes]
-  num_records : Int
-  record_size : Int
-} derive(Debug)
+  num_records : Int32
+  record_size : Int32
+}
 
 ///|
 /// Create a new DatabaseVector
 pub fn DatabaseVector::new(
   records : Array[Bytes],
-  record_size : Int,
+  record_size : Int32,
 ) -> DatabaseVector {
   let num_records = records.length()
-  { records, num_records, record_size }
+  { records, num_records, record_size, }
 }
 
 ///|
 /// 2-Server PIR Query containing two query bitmasks
+#derive(Debug)
 pub struct TwoServerQuery {
   q1 : FixedArray[Bool]
   q2 : FixedArray[Bool]
-} derive(Debug)
+}
 
 ///|
 /// Create new TwoServerQuery
@@ -29,14 +31,15 @@ pub fn TwoServerQuery::new(
   q1 : FixedArray[Bool],
   q2 : FixedArray[Bool],
 ) -> TwoServerQuery {
-  { q1, q2 }
+  { q1, q2, }
 }
 
 ///|
 /// Single server PIR response block
+#derive(Debug)
 pub struct PirResponse {
   data : Bytes
-} derive(Debug)
+}
 
 ///|
 /// Create new PirResponse
@@ -46,19 +49,20 @@ pub fn PirResponse::new(data : Bytes) -> PirResponse {
 
 ///|
 /// PIR Evaluation Metrics
+#derive(Debug)
 pub struct PirMetrics {
-  database_size_bytes : Int
-  query_size_bytes : Int
-  response_size_bytes : Int
+  database_size_bytes : Int32
+  query_size_bytes : Int32
+  response_size_bytes : Int32
   communication_overhead_ratio : Double
-} derive(Debug)
+}
 
 ///|
 /// Create new PirMetrics
 pub fn PirMetrics::new(
-  database_size_bytes : Int,
-  query_size_bytes : Int,
-  response_size_bytes : Int,
+  database_size_bytes : Int32,
+  query_size_bytes : Int32,
+  response_size_bytes : Int32,
   communication_overhead_ratio : Double,
 ) -> PirMetrics {
   {
@@ -68,3 +72,15 @@ pub fn PirMetrics::new(
     communication_overhead_ratio,
   }
 }
+
+///|
+pub extend DatabaseVector with @debug.Debug::{to_repr}
+
+///|
+pub extend PirMetrics with @debug.Debug::{to_repr}
+
+///|
+pub extend PirResponse with @debug.Debug::{to_repr}
+
+///|
+pub extend TwoServerQuery with @debug.Debug::{to_repr}

@@ -1,6 +1,6 @@
 ///|
 test "blind index maps keywords to posting slots" {
-  let table = BlindIndexTable::new(8)
+  let table = @pir.BlindIndexTable::new(8)
   table.add_entry("privacy", @crypto.string_to_bytes("posting_0"))
   table.add_entry("search", @crypto.string_to_bytes("posting_1"))
 

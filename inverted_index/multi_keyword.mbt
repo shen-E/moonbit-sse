@@ -14,14 +14,14 @@ pub fn search_conjunctive(
     return first_res
   }
 
-  let mut current_set : Map[Int, Int] = Map([])
+  let mut current_set : Map[Int32, Int32] = Map([])
   for i in 0..<first_res.doc_ids.length() {
     current_set[first_res.doc_ids[i]] = first_res.scores[i]
   }
 
   for k = 1; k < keywords.length(); k = k + 1 {
     let next_res = client.search(server, keywords[k])
-    let next_map : Map[Int, Int] = Map([])
+    let next_map : Map[Int32, Int32] = Map([])
     for i in 0..<next_res.doc_ids.length() {
       let doc = next_res.doc_ids[i]
       match current_set.get(doc) {
@@ -32,8 +32,8 @@ pub fn search_conjunctive(
     current_set = next_map
   }
 
-  let final_docs : Array[Int] = []
-  let final_scores : Array[Int] = []
+  let final_docs : Array[Int32] = []
+  let final_scores : Array[Int32] = []
   for doc, score in current_set {
     final_docs.push(doc)
     final_scores.push(score)
@@ -48,7 +48,7 @@ pub fn search_disjunctive(
   server : ForwardSecureServer,
   keywords : Array[String],
 ) -> SearchResult {
-  let doc_scores : Map[Int, Int] = Map([])
+  let doc_scores : Map[Int32, Int32] = Map([])
 
   for k in 0..<keywords.length() {
     let res = client.search(server, keywords[k])
@@ -62,8 +62,8 @@ pub fn search_disjunctive(
     }
   }
 
-  let final_docs : Array[Int] = []
-  let final_scores : Array[Int] = []
+  let final_docs : Array[Int32] = []
+  let final_scores : Array[Int32] = []
   for doc, score in doc_scores {
     final_docs.push(doc)
     final_scores.push(score)

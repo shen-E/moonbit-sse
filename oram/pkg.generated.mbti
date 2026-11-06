@@ -9,97 +9,107 @@ import {
 // Values
 pub fn oblivious_shuffle(Array[Block], @crypto.Prg) -> Unit
 
-pub fn oblivious_sort(Array[Block], Int, Int, Bool) -> Unit
+pub fn oblivious_sort(Array[Block], Int32, Int32, Bool) -> Unit
 
 // Errors
 
 // Types and methods
+#derive(@debug.Debug)
 pub(all) enum AccessOp {
   Read
   Write(Bytes)
-} derive(@debug.Debug)
+}
+pub fn AccessOp::to_repr(Self) -> @debug.Repr
 
+#derive(@debug.Debug)
 pub struct AccessResult {
   data : Bytes
-  path_length : Int
-  stash_size_after : Int
-} derive(@debug.Debug)
-pub fn AccessResult::new(Bytes, Int, Int) -> Self
+  path_length : Int32
+  stash_size_after : Int32
+}
+pub fn AccessResult::new(Bytes, Int32, Int32) -> Self
+pub fn AccessResult::to_repr(Self) -> @debug.Repr
 
+#derive(@debug.Debug)
 pub struct AccessTrace {
   op_type : String
-  path_nodes : Array[Int]
-} derive(@debug.Debug)
+  path_nodes : Array[Int32]
+}
+pub fn AccessTrace::to_repr(Self) -> @debug.Repr
 
+#derive(@debug.Debug)
 pub struct Block {
-  id : Int
+  id : Int32
   data : Bytes
   is_dummy : Bool
-} derive(@debug.Debug)
-pub fn Block::dummy(Int) -> Self
-pub fn Block::real(Int, Bytes) -> Self
+}
+pub fn Block::dummy(Int32) -> Self
+pub fn Block::real(Int32, Bytes) -> Self
+pub fn Block::to_repr(Self) -> @debug.Repr
 
+#derive(@debug.Debug)
 pub struct Bucket {
   blocks : Array[Block]
-} derive(@debug.Debug)
-pub fn Bucket::new(Int, Int) -> Self
+}
+pub fn Bucket::new(Int32, Int32) -> Self
+pub fn Bucket::to_repr(Self) -> @debug.Repr
 
 pub struct CircuitOramManager {
   path_oram : PathOram
 }
-pub fn CircuitOramManager::compact_access(Self, AccessOp, Int) -> AccessResult
-pub fn CircuitOramManager::new(Int, Int, Bytes) -> Self
+pub fn CircuitOramManager::compact_access(Self, AccessOp, Int32) -> AccessResult
+pub fn CircuitOramManager::new(Int32, Int32, Bytes) -> Self
 
 pub struct ObliviousProtocolSimulator {
   engine : TreeOramEngine
   traces : Array[AccessTrace]
 }
 pub fn ObliviousProtocolSimulator::audit_trace_security(Self) -> Bool
-pub fn ObliviousProtocolSimulator::new(Int, Int, Bytes) -> Self
-pub fn ObliviousProtocolSimulator::traced_access(Self, String, Int, Bytes?) -> AccessResult
+pub fn ObliviousProtocolSimulator::new(Int32, Int32, Bytes) -> Self
+pub fn ObliviousProtocolSimulator::traced_access(Self, String, Int32, Bytes?) -> AccessResult
 
 pub struct PathOram {
-  height_l : Int
-  num_leaves : Int
-  capacity_z : Int
-  block_size : Int
+  height_l : Int32
+  num_leaves : Int32
+  capacity_z : Int32
+  block_size : Int32
   key : Bytes
-  pos_map : Map[Int, Int]
-  mut stash : Array[(Block, Int)]
+  pos_map : Map[Int32, Int32]
+  mut stash : Array[(Block, Int32)]
   tree : Array[Bucket]
   prg : @crypto.Prg
 }
-pub fn PathOram::access(Self, AccessOp, Int) -> AccessResult
-pub fn PathOram::new(Int, Int, Int, Bytes) -> Self
+pub fn PathOram::access(Self, AccessOp, Int32) -> AccessResult
+pub fn PathOram::new(Int32, Int32, Int32, Bytes) -> Self
 
 pub struct RecursiveOram {
   top_oram : PathOram
   base_oram : PathOram
   key : Bytes
 }
-pub fn RecursiveOram::access(Self, AccessOp, Int) -> AccessResult
-pub fn RecursiveOram::new(Int, Int, Bytes) -> Self
+pub fn RecursiveOram::access(Self, AccessOp, Int32) -> AccessResult
+pub fn RecursiveOram::new(Int32, Int32, Bytes) -> Self
 
 pub struct SqrtOram {
-  num_elements : Int
-  block_size : Int
-  sqrt_capacity : Int
+  num_elements : Int32
+  block_size : Int32
+  sqrt_capacity : Int32
   main_memory : Array[Block]
   mut shelter : Array[Block]
   key : Bytes
   prg : @crypto.Prg
-  mut access_count : Int
+  mut access_count : Int32
 }
-pub fn SqrtOram::access(Self, AccessOp, Int) -> Bytes
-pub fn SqrtOram::new(Int, Int, Bytes) -> Self
+pub fn SqrtOram::access(Self, AccessOp, Int32) -> Bytes
+pub fn SqrtOram::new(Int32, Int32, Bytes) -> Self
 pub fn SqrtOram::rebuild_shuffle(Self) -> Unit
 
 pub struct TreeOramEngine {
   path_oram : PathOram
 }
-pub fn TreeOramEngine::new(Int, Int, Bytes) -> Self
-pub fn TreeOramEngine::read(Self, Int) -> AccessResult
-pub fn TreeOramEngine::write(Self, Int, Bytes) -> AccessResult
+pub fn TreeOramEngine::new(Int32, Int32, Bytes) -> Self
+pub fn TreeOramEngine::read(Self, Int32) -> AccessResult
+pub fn TreeOramEngine::write(Self, Int32, Bytes) -> AccessResult
 
 // Type aliases
 

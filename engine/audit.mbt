@@ -1,31 +1,32 @@
 ///|
 /// Observed query-pattern summary.
+#derive(Debug)
 pub struct LeakageProfile {
-  observed_query_count : Int
-  distinct_query_count : Int
-  repeated_query_count : Int
-} derive(Debug)
+  observed_query_count : Int32
+  distinct_query_count : Int32
+  repeated_query_count : Int32
+}
 
 ///|
 /// Create a query-pattern summary.
 pub fn LeakageProfile::new(
-  observed_query_count : Int,
-  distinct_query_count : Int,
-  repeated_query_count : Int,
+  observed_query_count : Int32,
+  distinct_query_count : Int32,
+  repeated_query_count : Int32,
 ) -> LeakageProfile {
-  { observed_query_count, distinct_query_count, repeated_query_count }
+  { observed_query_count, distinct_query_count, repeated_query_count, }
 }
 
 ///|
 /// Leakage Profile Auditor
 pub struct LeakageAuditor {
-  queries_observed : Map[String, Int]
+  queries_observed : Map[String, Int32]
 }
 
 ///|
 /// Create new LeakageAuditor
 pub fn LeakageAuditor::new() -> LeakageAuditor {
-  { queries_observed: Map([]) }
+  { queries_observed: Map([]), }
 }
 
 ///|
@@ -57,3 +58,6 @@ pub fn LeakageAuditor::evaluate_leakage(
   let repeated = if observed > distinct { observed - distinct } else { 0 }
   LeakageProfile::new(observed, distinct, repeated)
 }
+
+///|
+pub extend LeakageProfile with @debug.Debug::{to_repr}

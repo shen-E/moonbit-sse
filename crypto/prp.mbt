@@ -2,14 +2,14 @@
 /// Pseudo-Random Permutation over domain [0, domain_size - 1]
 pub struct Prp {
   key : Bytes
-  domain_size : Int
-  radix : Int
-  num_rounds : Int
+  domain_size : Int32
+  radix : Int32
+  num_rounds : Int32
 }
 
 ///|
 /// Compute integer square root rounded up
-fn int_sqrt_ceil(n : Int) -> Int {
+fn int_sqrt_ceil(n : Int32) -> Int32 {
   let mut r = 1
   while r * r < n {
     r = r + 1
@@ -19,14 +19,14 @@ fn int_sqrt_ceil(n : Int) -> Int {
 
 ///|
 /// Create a new PRP over domain [0, domain_size - 1]
-pub fn Prp::new(key : Bytes, domain_size : Int) -> Prp {
+pub fn Prp::new(key : Bytes, domain_size : Int32) -> Prp {
   let radix = int_sqrt_ceil(domain_size)
-  { key, domain_size, radix, num_rounds: 4 }
+  { key, domain_size, radix, num_rounds: 4, }
 }
 
 ///|
 /// Round function for Feistel network
-fn prp_round_fn(key : Bytes, round : Int, r : Int) -> Int {
+fn prp_round_fn(key : Bytes, round : Int32, r : Int32) -> Int32 {
   let buf : FixedArray[Byte] = FixedArray::make(8, b'\x00')
   let r_u = r.reinterpret_as_uint()
   let r_b = uint32_to_be_bytes(r_u)
@@ -45,7 +45,7 @@ fn prp_round_fn(key : Bytes, round : Int, r : Int) -> Int {
 
 ///|
 /// Forward permutation with cycle-walking
-pub fn Prp::permute(self : Prp, x : Int) -> Int {
+pub fn Prp::permute(self : Prp, x : Int32) -> Int32 {
   if self.domain_size <= 1 {
     return x
   }
@@ -70,7 +70,7 @@ pub fn Prp::permute(self : Prp, x : Int) -> Int {
 
 ///|
 /// Invert permutation with cycle-walking
-pub fn Prp::invert(self : Prp, y : Int) -> Int {
+pub fn Prp::invert(self : Prp, y : Int32) -> Int32 {
   if self.domain_size <= 1 {
     return y
   }

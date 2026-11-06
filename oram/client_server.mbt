@@ -1,9 +1,10 @@
 ///|
 /// Oblivious storage access trace record for security audit
+#derive(Debug)
 pub struct AccessTrace {
   op_type : String
-  path_nodes : Array[Int]
-} derive(Debug)
+  path_nodes : Array[Int32]
+}
 
 ///|
 /// Client-Server Oblivious Storage Protocol Simulator
@@ -15,12 +16,12 @@ pub struct ObliviousProtocolSimulator {
 ///|
 /// Create new simulator
 pub fn ObliviousProtocolSimulator::new(
-  height_l : Int,
-  block_size : Int,
+  height_l : Int32,
+  block_size : Int32,
   key : Bytes,
 ) -> ObliviousProtocolSimulator {
   let engine = TreeOramEngine::new(height_l, block_size, key)
-  { engine, traces: [] }
+  { engine, traces: [], }
 }
 
 ///|
@@ -28,7 +29,7 @@ pub fn ObliviousProtocolSimulator::new(
 pub fn ObliviousProtocolSimulator::traced_access(
   self : ObliviousProtocolSimulator,
   op_type : String,
-  block_id : Int,
+  block_id : Int32,
   data : Bytes?,
 ) -> AccessResult {
   let res = match data {
@@ -39,7 +40,7 @@ pub fn ObliviousProtocolSimulator::traced_access(
     self.engine.path_oram.height_l,
     self.engine.path_oram.pos_map.get(block_id).unwrap(),
   )
-  self.traces.push({ op_type, path_nodes })
+  self.traces.push({ op_type, path_nodes, })
   res
 }
 
@@ -59,3 +60,6 @@ pub fn ObliviousProtocolSimulator::audit_trace_security(
   }
   true
 }
+
+///|
+pub extend AccessTrace with @debug.Debug::{to_repr}

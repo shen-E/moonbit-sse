@@ -3,11 +3,13 @@
 pub fn pbkdf2_hmac_sha256(
   password : Bytes,
   salt : Bytes,
-  iterations : Int,
-  key_len : Int,
-) -> Bytes {
+  iterations : Int32,
+  key_len : Int32,
+) -> Bytes raise CryptoInputError {
+  guard iterations > 0 else { raise InvalidIterations(iterations) }
+  guard key_len > 0 else { raise InvalidKeyLength(key_len) }
   let out : FixedArray[Byte] = FixedArray::make(key_len, b'\x00')
-  let num_blocks = (key_len + 31) / 32
+  let num_blocks = (key_len - 1) / 32 + 1
 
   for block_idx = 1; block_idx <= num_blocks; block_idx = block_idx + 1 {
     let salt_with_idx_len = salt.length() + 4
@@ -36,7 +38,7 @@ pub fn pbkdf2_hmac_sha256(
     }
 
     let start = (block_idx - 1) * 32
-    let end = if start + 32 < key_len { start + 32 } else { key_len }
+    let end = start + (if key_len - start < 32 { key_len - start } else { 32 })
     for i in start..<end {
       out[i] = f_accum[i - start]
     }

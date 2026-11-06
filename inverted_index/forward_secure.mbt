@@ -3,14 +3,14 @@
 pub struct ForwardSecureClient {
   trapdoor_gen : @trapdoor.TrapdoorGenerator
   master_key : Bytes
-  state_map : Map[String, Int]
+  state_map : Map[String, Int32]
 }
 
 ///|
 /// Create new ForwardSecureClient
 pub fn ForwardSecureClient::new(master_key : Bytes) -> ForwardSecureClient {
   let trapdoor_gen = @trapdoor.TrapdoorGenerator::new(master_key)
-  { trapdoor_gen, master_key, state_map: Map([]) }
+  { trapdoor_gen, master_key, state_map: Map([]), }
 }
 
 ///|
@@ -22,7 +22,7 @@ pub struct ForwardSecureServer {
 ///|
 /// Create new empty ForwardSecureServer
 pub fn ForwardSecureServer::new() -> ForwardSecureServer {
-  { storage: Map([]) }
+  { storage: Map([]), }
 }
 
 ///|
@@ -31,7 +31,7 @@ pub fn ForwardSecureClient::insert(
   self : ForwardSecureClient,
   server : ForwardSecureServer,
   keyword : String,
-  doc_id : Int,
+  doc_id : Int32,
 ) -> Unit {
   let cur_c = match self.state_map.get(keyword) {
     Some(c) => c
@@ -58,7 +58,7 @@ pub fn ForwardSecureClient::delete(
   self : ForwardSecureClient,
   server : ForwardSecureServer,
   keyword : String,
-  doc_id : Int,
+  doc_id : Int32,
 ) -> Unit {
   let cur_c = match self.state_map.get(keyword) {
     Some(c) => c
@@ -94,7 +94,7 @@ pub fn ForwardSecureClient::search(
     return SearchResult::new([], [])
   }
 
-  let results_map : Map[Int, Int] = Map([])
+  let results_map : Map[Int32, Int32] = Map([])
   let mask_prf_key = self.trapdoor_gen.mask_prf_key
 
   for c = max_c; c >= 1; c = c - 1 {
@@ -128,8 +128,8 @@ pub fn ForwardSecureClient::search(
     }
   }
 
-  let final_docs : Array[Int] = []
-  let final_scores : Array[Int] = []
+  let final_docs : Array[Int32] = []
+  let final_scores : Array[Int32] = []
   for doc, status in results_map {
     if status == 1 {
       final_docs.push(doc)

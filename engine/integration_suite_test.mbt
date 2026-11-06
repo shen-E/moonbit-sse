@@ -3,14 +3,14 @@ test "end to end full lifecycle integration test" {
   let master_key = @crypto.hex_to_bytes(
     "1234567812345678123456781234567812345678123456781234567812345678",
   )
-  let db = EncryptedDatabase::new(master_key)
-  let snap_mgr = SnapshotManager::new(master_key)
-  let tx_mgr = TransactionManager::new(db)
+  let db = @engine.EncryptedDatabase::new(master_key)
+  let snap_mgr = @engine.SnapshotManager::new(master_key)
+  let tx_mgr = @engine.TransactionManager::new(db)
 
   // 1. Bulk Ingest Documents inside Transaction
   tx_mgr.begin()
   for i = 1; i <= 10; i = i + 1 {
-    let doc = Document::new(
+    let doc = @engine.Document::new(
       i,
       "Article Number " + i.to_string(),
       "Content discussing security, privacy, and encryption protocol " +

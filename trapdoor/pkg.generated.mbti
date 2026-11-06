@@ -8,18 +8,20 @@ import {
 // Values
 pub fn blind_search_token(SearchToken, Bytes) -> BlindedToken
 
-pub fn split_ngrams(String, Int) -> Array[String]
+pub fn split_ngrams(String, Int32) -> Array[String]
 
-pub fn unblind_search_token(BlindedToken, Bytes, UInt) -> SearchToken
+pub fn unblind_search_token(BlindedToken, Bytes, UInt32) -> SearchToken
 
 // Errors
 
 // Types and methods
+#derive(@debug.Debug)
 pub struct BlindedToken {
   blinded_token : Bytes
   blinding_factor : Bytes
-} derive(@debug.Debug)
+}
 pub fn BlindedToken::new(Bytes, Bytes) -> Self
+pub fn BlindedToken::to_repr(Self) -> @debug.Repr
 pub fn BlindedToken::unblind(Self) -> Bytes
 
 pub struct ConjunctiveDerivator {
@@ -27,68 +29,76 @@ pub struct ConjunctiveDerivator {
   cross_key : Bytes
 }
 pub fn ConjunctiveDerivator::compute_cross_tag(Self, String, String) -> Bytes
-pub fn ConjunctiveDerivator::generate_conjunctive_token(Self, String, Array[String], UInt) -> ConjunctiveToken
+pub fn ConjunctiveDerivator::generate_conjunctive_token(Self, String, Array[String], UInt32) -> ConjunctiveToken
 pub fn ConjunctiveDerivator::new(TrapdoorGenerator) -> Self
 
+#derive(@debug.Debug)
 pub struct ConjunctiveToken {
   primary_token : SearchToken
   cross_tags : Array[Bytes]
-} derive(@debug.Debug)
+}
 pub fn ConjunctiveToken::get_cross_tags(Self) -> Array[Bytes]
 pub fn ConjunctiveToken::get_primary_token(Self) -> SearchToken
 pub fn ConjunctiveToken::new(SearchToken, Array[Bytes]) -> Self
+pub fn ConjunctiveToken::to_repr(Self) -> @debug.Repr
 
 pub struct ExpiringTrapdoorManager {
   generator : TrapdoorGenerator
   auth_key : Bytes
 }
-pub fn ExpiringTrapdoorManager::generate_time_bound_token(Self, String, UInt, UInt) -> TimeBoundToken
+pub fn ExpiringTrapdoorManager::generate_time_bound_token(Self, String, UInt32, UInt32) -> TimeBoundToken
 pub fn ExpiringTrapdoorManager::new(TrapdoorGenerator) -> Self
-pub fn ExpiringTrapdoorManager::verify_token(Self, TimeBoundToken, UInt) -> Bool
+pub fn ExpiringTrapdoorManager::verify_token(Self, TimeBoundToken, UInt32) -> Bool
 
 pub struct FuzzyTrapdoorGenerator {
   generator : TrapdoorGenerator
-  gram_size : Int
+  gram_size : Int32
 }
-pub fn FuzzyTrapdoorGenerator::generate_fuzzy_tokens(Self, String, UInt) -> Array[SearchToken]
-pub fn FuzzyTrapdoorGenerator::new(TrapdoorGenerator, Int) -> Self
+pub fn FuzzyTrapdoorGenerator::generate_fuzzy_tokens(Self, String, UInt32) -> Array[SearchToken]
+pub fn FuzzyTrapdoorGenerator::new(TrapdoorGenerator, Int32) -> Self
 
 pub struct HierarchicalTrapdoor {
   generator : TrapdoorGenerator
   root_domain : String
 }
-pub fn HierarchicalTrapdoor::derive_scoped_token(Self, Array[String], String, UInt) -> SearchToken
+pub fn HierarchicalTrapdoor::derive_scoped_token(Self, Array[String], String, UInt32) -> SearchToken
 pub fn HierarchicalTrapdoor::new(TrapdoorGenerator, String) -> Self
 
 pub struct PredicateGenerator {
   generator : TrapdoorGenerator
 }
-pub fn PredicateGenerator::generate_predicate_token(Self, Array[String], Array[Int], Int, UInt) -> PredicateToken
+pub fn PredicateGenerator::generate_predicate_token(Self, Array[String], Array[Int32], Int32, UInt32) -> PredicateToken
 pub fn PredicateGenerator::new(TrapdoorGenerator) -> Self
 
+#derive(@debug.Debug)
 pub struct PredicateToken {
   weight_vectors : Array[Bytes]
-  threshold : Int
-} derive(@debug.Debug)
-pub fn PredicateToken::new(Array[Bytes], Int) -> Self
+  threshold : Int32
+}
+pub fn PredicateToken::new(Array[Bytes], Int32) -> Self
+pub fn PredicateToken::to_repr(Self) -> @debug.Repr
 
+#derive(@debug.Debug)
 pub struct SearchToken {
   token : Bytes
   label : Bytes
-  epoch : UInt
-} derive(@debug.Debug)
-pub fn SearchToken::get_epoch(Self) -> UInt
+  epoch : UInt32
+}
+pub fn SearchToken::get_epoch(Self) -> UInt32
 pub fn SearchToken::get_label(Self) -> Bytes
 pub fn SearchToken::get_token(Self) -> Bytes
-pub fn SearchToken::new(Bytes, Bytes, UInt) -> Self
+pub fn SearchToken::new(Bytes, Bytes, UInt32) -> Self
+pub fn SearchToken::to_repr(Self) -> @debug.Repr
 
+#derive(@debug.Debug)
 pub struct TimeBoundToken {
   token : SearchToken
-  valid_until_epoch : UInt
+  valid_until_epoch : UInt32
   auth_tag : Bytes
-} derive(@debug.Debug)
-pub fn TimeBoundToken::is_expired(Self, UInt) -> Bool
-pub fn TimeBoundToken::new(SearchToken, UInt, Bytes) -> Self
+}
+pub fn TimeBoundToken::is_expired(Self, UInt32) -> Bool
+pub fn TimeBoundToken::new(SearchToken, UInt32, Bytes) -> Self
+pub fn TimeBoundToken::to_repr(Self) -> @debug.Repr
 
 pub struct TrapdoorGenerator {
   master_key : Bytes
@@ -97,21 +107,23 @@ pub struct TrapdoorGenerator {
   mask_prf_key : Bytes
 }
 pub fn TrapdoorGenerator::derive_keyword_key(Self, String) -> Bytes
-pub fn TrapdoorGenerator::generate_search_token(Self, String, UInt) -> SearchToken
-pub fn TrapdoorGenerator::generate_update_token(Self, String, Int, Int, Int, UInt) -> UpdateToken
+pub fn TrapdoorGenerator::generate_search_token(Self, String, UInt32) -> SearchToken
+pub fn TrapdoorGenerator::generate_update_token(Self, String, Int32, Int32, Int32, UInt32) -> UpdateToken
 pub fn TrapdoorGenerator::new(Bytes) -> Self
 
+#derive(@debug.Debug)
 pub struct UpdateToken {
   addr : Bytes
   val_mask : Bytes
   proof : Bytes
-  epoch : UInt
-} derive(@debug.Debug)
+  epoch : UInt32
+}
 pub fn UpdateToken::get_addr(Self) -> Bytes
-pub fn UpdateToken::get_epoch(Self) -> UInt
+pub fn UpdateToken::get_epoch(Self) -> UInt32
 pub fn UpdateToken::get_proof(Self) -> Bytes
 pub fn UpdateToken::get_val_mask(Self) -> Bytes
-pub fn UpdateToken::new(Bytes, Bytes, Bytes, UInt) -> Self
+pub fn UpdateToken::new(Bytes, Bytes, Bytes, UInt32) -> Self
+pub fn UpdateToken::to_repr(Self) -> @debug.Repr
 
 // Type aliases
 

@@ -10,7 +10,7 @@ pub struct StaticSseClient {
 pub fn StaticSseClient::new(master_key : Bytes) -> StaticSseClient {
   let trapdoor_gen = @trapdoor.TrapdoorGenerator::new(master_key)
   let enc_key = @crypto.derive_key(master_key, "static-sse-enc-key", 32)
-  { trapdoor_gen, enc_key }
+  { trapdoor_gen, enc_key, }
 }
 
 ///|
@@ -22,14 +22,14 @@ pub struct StaticSseServer {
 ///|
 /// Create new empty StaticSseServer
 pub fn StaticSseServer::new() -> StaticSseServer {
-  { table: Map([]) }
+  { table: Map([]), }
 }
 
 ///|
 /// Client builds encrypted index from plaintext keyword-to-docs dictionary
 pub fn StaticSseClient::build_index(
   self : StaticSseClient,
-  raw_index : Map[String, Array[Int]],
+  raw_index : Map[String, Array[Int32]],
 ) -> StaticSseServer {
   let server = StaticSseServer::new()
 
@@ -71,8 +71,8 @@ pub fn StaticSseClient::search(
       let iv = @crypto.derive_key(self.enc_key, keyword, 16)
       let decrypted = @crypto.aes128_ctr(self.enc_key, iv, enc_payload)
       let num_docs = decrypted.length() / 4
-      let doc_ids : Array[Int] = []
-      let scores : Array[Int] = []
+      let doc_ids : Array[Int32] = []
+      let scores : Array[Int32] = []
       for i in 0..<num_docs {
         let doc_u = @crypto.uint32_from_be_bytes(decrypted, i * 4)
         doc_ids.push(doc_u.reinterpret_as_int())

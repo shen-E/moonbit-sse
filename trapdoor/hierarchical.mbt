@@ -11,7 +11,7 @@ pub fn HierarchicalTrapdoor::new(
   generator : TrapdoorGenerator,
   root_domain : String,
 ) -> HierarchicalTrapdoor {
-  { generator, root_domain }
+  { generator, root_domain, }
 }
 
 ///|
@@ -20,7 +20,7 @@ pub fn HierarchicalTrapdoor::derive_scoped_token(
   self : HierarchicalTrapdoor,
   path_scopes : Array[String],
   keyword : String,
-  epoch : UInt,
+  epoch : UInt32,
 ) -> SearchToken {
   let buf = StringBuilder()
   buf.write_string(self.root_domain)

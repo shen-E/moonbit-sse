@@ -7,12 +7,12 @@ pub struct BinaryBuffer {
 ///|
 /// Create new empty BinaryBuffer
 pub fn BinaryBuffer::new() -> BinaryBuffer {
-  { bytes: [] }
+  { bytes: [], }
 }
 
 ///|
 /// Write 32-bit int to buffer
-pub fn BinaryBuffer::write_int(self : BinaryBuffer, val : Int) -> Unit {
+pub fn BinaryBuffer::write_int(self : BinaryBuffer, val : Int32) -> Unit {
   let b = @crypto.uint32_to_be_bytes(val.reinterpret_as_uint())
   for i in 0..<4 {
     self.bytes.push(b[i])

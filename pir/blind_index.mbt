@@ -2,14 +2,14 @@
 /// Blind Index Table: PIR-backed oblivious keyword index lookup
 pub struct BlindIndexTable {
   db : DatabaseVector
-  keyword_map : Map[String, Int]
+  keyword_map : Map[String, Int32]
 }
 
 ///|
 /// Create new BlindIndexTable
-pub fn BlindIndexTable::new(record_size : Int) -> BlindIndexTable {
+pub fn BlindIndexTable::new(record_size : Int32) -> BlindIndexTable {
   let db = DatabaseVector::new([], record_size)
-  { db, keyword_map: Map([]) }
+  { db, keyword_map: Map([]), }
 }
 
 ///|
@@ -29,6 +29,6 @@ pub fn BlindIndexTable::add_entry(
 pub fn BlindIndexTable::get_slot(
   self : BlindIndexTable,
   keyword : String,
-) -> Int? {
+) -> Int32? {
   self.keyword_map.get(keyword)
 }

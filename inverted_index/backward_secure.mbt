@@ -2,14 +2,14 @@
 /// Dynamic SSE reference with a deletion revocation filter.
 pub struct BackwardSecureEngine {
   client : ForwardSecureClient
-  revocation_list : Map[String, Array[Int]]
+  revocation_list : Map[String, Array[Int32]]
 }
 
 ///|
 /// Create new BackwardSecureEngine
 pub fn BackwardSecureEngine::new(master_key : Bytes) -> BackwardSecureEngine {
   let client = ForwardSecureClient::new(master_key)
-  { client, revocation_list: Map([]) }
+  { client, revocation_list: Map([]), }
 }
 
 ///|
@@ -18,7 +18,7 @@ pub fn BackwardSecureEngine::insert(
   self : BackwardSecureEngine,
   server : ForwardSecureServer,
   keyword : String,
-  doc_id : Int,
+  doc_id : Int32,
 ) -> Unit {
   self.client.insert(server, keyword, doc_id)
 }
@@ -29,7 +29,7 @@ pub fn BackwardSecureEngine::delete(
   self : BackwardSecureEngine,
   server : ForwardSecureServer,
   keyword : String,
-  doc_id : Int,
+  doc_id : Int32,
 ) -> Unit {
   self.client.delete(server, keyword, doc_id)
   match self.revocation_list.get(keyword) {
@@ -46,7 +46,7 @@ pub fn BackwardSecureEngine::search(
   keyword : String,
 ) -> SearchResult {
   let res = self.client.search(server, keyword)
-  let revoked_set : Map[Int, Bool] = Map([])
+  let revoked_set : Map[Int32, Bool] = Map([])
   match self.revocation_list.get(keyword) {
     Some(arr) =>
       for i in 0..<arr.length() {
@@ -55,8 +55,8 @@ pub fn BackwardSecureEngine::search(
     None => ()
   }
 
-  let filtered_docs : Array[Int] = []
-  let filtered_scores : Array[Int] = []
+  let filtered_docs : Array[Int32] = []
+  let filtered_scores : Array[Int32] = []
   for i in 0..<res.doc_ids.length() {
     let doc = res.doc_ids[i]
     match revoked_set.get(doc) {

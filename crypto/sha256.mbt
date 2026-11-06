@@ -1,13 +1,13 @@
 ///|
 /// Initial hash values (H0..H7) for SHA-256
-let sha256_init_h : FixedArray[UInt] = [
+let sha256_init_h : FixedArray[UInt32] = [
   0x6a09e667U, 0xbb67ae85U, 0x3c6ef372U, 0xa54ff53aU, 0x510e527fU, 0x9b05688cU, 0x1f83d9abU,
   0x5be0cd19U,
 ]
 
 ///|
 /// Round constants K for SHA-256
-let sha256_k : FixedArray[UInt] = [
+let sha256_k : FixedArray[UInt32] = [
   0x428a2f98U, 0x71374491U, 0xb5c0fbcfU, 0xe9b5dba5U, 0x3956c25bU, 0x59f111f1U, 0x923f82a4U,
   0xab1c5ed5U, 0xd807aa98U, 0x12835b01U, 0x243185beU, 0x550c7dc3U, 0x72be5d74U, 0x80deb1feU,
   0x9bdc06a7U, 0xc19bf174U, 0xe49b69c1U, 0xefbe4786U, 0x0fc19dc6U, 0x240ca1ccU, 0x2de92c6fU,
@@ -22,49 +22,49 @@ let sha256_k : FixedArray[UInt] = [
 
 ///|
 /// Bitwise right rotation for UInt
-fn rotr(x : UInt, n : Int) -> UInt {
+fn rotr(x : UInt32, n : Int32) -> UInt32 {
   (x >> n) | (x << (32 - n))
 }
 
 ///|
 /// SHA-256 helper functions
-fn ch(x : UInt, y : UInt, z : UInt) -> UInt {
+fn ch(x : UInt32, y : UInt32, z : UInt32) -> UInt32 {
   (x & y) ^ ((x ^ 0xFFFFFFFFU) & z)
 }
 
 ///|
-fn maj(x : UInt, y : UInt, z : UInt) -> UInt {
+fn maj(x : UInt32, y : UInt32, z : UInt32) -> UInt32 {
   (x & y) ^ (x & z) ^ (y & z)
 }
 
 ///|
-fn sigma0(x : UInt) -> UInt {
+fn sigma0(x : UInt32) -> UInt32 {
   rotr(x, 2) ^ rotr(x, 13) ^ rotr(x, 22)
 }
 
 ///|
-fn sigma1(x : UInt) -> UInt {
+fn sigma1(x : UInt32) -> UInt32 {
   rotr(x, 6) ^ rotr(x, 11) ^ rotr(x, 25)
 }
 
 ///|
-fn gamma0(x : UInt) -> UInt {
+fn gamma0(x : UInt32) -> UInt32 {
   rotr(x, 7) ^ rotr(x, 18) ^ (x >> 3)
 }
 
 ///|
-fn gamma1(x : UInt) -> UInt {
+fn gamma1(x : UInt32) -> UInt32 {
   rotr(x, 17) ^ rotr(x, 19) ^ (x >> 10)
 }
 
 ///|
 /// Process a 64-byte block in SHA-256
 fn sha256_process_block(
-  state : FixedArray[UInt],
+  state : FixedArray[UInt32],
   block : Bytes,
-  offset : Int,
+  offset : Int32,
 ) -> Unit {
-  let w : FixedArray[UInt] = FixedArray::make(64, 0U)
+  let w : FixedArray[UInt32] = FixedArray::make(64, 0U)
   for i in 0..<16 {
     w[i] = uint32_from_be_bytes(block, offset + i * 4)
   }
@@ -107,7 +107,7 @@ fn sha256_process_block(
 ///|
 /// Compute SHA-256 hash of arbitrary bytes
 pub fn sha256(data : Bytes) -> Bytes {
-  let state : FixedArray[UInt] = FixedArray::make(8, 0U)
+  let state : FixedArray[UInt32] = FixedArray::make(8, 0U)
   for i in 0..<8 {
     state[i] = sha256_init_h[i]
   }

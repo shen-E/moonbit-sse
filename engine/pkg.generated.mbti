@@ -3,6 +3,7 @@ package "shen-E/moonbit-sse/engine"
 
 import {
   "moonbitlang/core/debug",
+  "shen-E/moonbit-sse/crypto",
   "shen-E/moonbit-sse/inverted_index",
   "shen-E/moonbit-sse/oram",
   "shen-E/moonbit-sse/pir",
@@ -25,30 +26,36 @@ pub struct BinaryBuffer {
 pub fn BinaryBuffer::new() -> Self
 pub fn BinaryBuffer::to_bytes(Self) -> Bytes
 pub fn BinaryBuffer::write_bytes(Self, Bytes) -> Unit
-pub fn BinaryBuffer::write_int(Self, Int) -> Unit
+pub fn BinaryBuffer::write_int(Self, Int32) -> Unit
 pub fn BinaryBuffer::write_string(Self, String) -> Unit
 
+#derive(@debug.Debug)
 pub struct CliCommand {
   action : String
   args : Array[String]
-} derive(@debug.Debug)
+}
+pub fn CliCommand::to_repr(Self) -> @debug.Repr
 
+#derive(@debug.Debug)
 pub struct DatabaseSnapshot {
   snapshot_id : UInt64
-  num_documents : Int
-  index_entries_count : Int
+  num_documents : Int32
+  index_entries_count : Int32
   integrity_tag : Bytes
-} derive(@debug.Debug)
-pub fn DatabaseSnapshot::new(UInt64, Int, Int, Bytes) -> Self
+}
+pub fn DatabaseSnapshot::new(UInt64, Int32, Int32, Bytes) -> Self
+pub fn DatabaseSnapshot::to_repr(Self) -> @debug.Repr
 
+#derive(@debug.Debug)
 pub struct Document {
-  id : Int
+  id : Int32
   title : String
   body : String
   tags : Array[String]
   created_at : UInt64
-} derive(@debug.Debug)
-pub fn Document::new(Int, String, String, Array[String], UInt64) -> Self
+}
+pub fn Document::new(Int32, String, String, Array[String], UInt64) -> Self
+pub fn Document::to_repr(Self) -> @debug.Repr
 
 pub struct EncryptedDatabase {
   master_key : Bytes
@@ -58,38 +65,42 @@ pub struct EncryptedDatabase {
   sse_engine : @inverted_index.BackwardSecureEngine
   server_index : @inverted_index.ForwardSecureServer
   oram_storage : @oram.TreeOramEngine
-  doc_store : Map[Int, Bytes]
+  doc_store : Map[Int32, Bytes]
 }
-pub fn EncryptedDatabase::delete_document(Self, Int, Array[String]) -> Unit
-pub fn EncryptedDatabase::get_document(Self, Int) -> String?
+pub fn EncryptedDatabase::delete_document(Self, Int32, Array[String]) -> Unit
+pub fn EncryptedDatabase::get_document(Self, Int32) -> String? raise @crypto.CryptoInputError
 pub fn EncryptedDatabase::insert_document(Self, Document) -> Unit
 pub fn EncryptedDatabase::new(Bytes) -> Self
 pub fn EncryptedDatabase::search_conjunctive(Self, Array[String]) -> @inverted_index.SearchResult
 pub fn EncryptedDatabase::search_keyword(Self, String) -> @inverted_index.SearchResult
 
 pub struct LeakageAuditor {
-  queries_observed : Map[String, Int]
+  queries_observed : Map[String, Int32]
 }
 pub fn LeakageAuditor::evaluate_leakage(Self) -> LeakageProfile
 pub fn LeakageAuditor::new() -> Self
 pub fn LeakageAuditor::observe_query(Self, String) -> Unit
 
+#derive(@debug.Debug)
 pub struct LeakageProfile {
-  observed_query_count : Int
-  distinct_query_count : Int
-  repeated_query_count : Int
-} derive(@debug.Debug)
-pub fn LeakageProfile::new(Int, Int, Int) -> Self
+  observed_query_count : Int32
+  distinct_query_count : Int32
+  repeated_query_count : Int32
+}
+pub fn LeakageProfile::new(Int32, Int32, Int32) -> Self
+pub fn LeakageProfile::to_repr(Self) -> @debug.Repr
 
+#derive(@debug.Debug)
 pub struct PerformanceAuditor {
-  total_queries : Int
-  total_inserts : Int
-  total_deletes : Int
-} derive(@debug.Debug)
+  total_queries : Int32
+  total_inserts : Int32
+  total_deletes : Int32
+}
 pub fn PerformanceAuditor::new() -> Self
 pub fn PerformanceAuditor::record_delete(Self) -> Self
 pub fn PerformanceAuditor::record_insert(Self) -> Self
 pub fn PerformanceAuditor::record_query(Self) -> Self
+pub fn PerformanceAuditor::to_repr(Self) -> @debug.Repr
 
 pub struct QueryOptimizer {
   high_security_mode : Bool
@@ -97,19 +108,23 @@ pub struct QueryOptimizer {
 pub fn QueryOptimizer::new(Bool) -> Self
 pub fn QueryOptimizer::plan(Self, Array[String]) -> QueryPlan
 
+#derive(@debug.Debug)
 pub struct QueryPlan {
   strategy : QueryStrategy
   target_terms : Array[String]
-  estimated_cost_ms : Int
+  estimated_cost_ms : Int32
   privacy_level : String
-} derive(@debug.Debug)
-pub fn QueryPlan::new(QueryStrategy, Array[String], Int, String) -> Self
+}
+pub fn QueryPlan::new(QueryStrategy, Array[String], Int32, String) -> Self
+pub fn QueryPlan::to_repr(Self) -> @debug.Repr
 
+#derive(@debug.Debug)
 pub(all) enum QueryStrategy {
   SSE_InvertedIndex
   ORAM_Oblivious
   PIR_DirectVector
-} derive(@debug.Debug)
+}
+pub fn QueryStrategy::to_repr(Self) -> @debug.Repr
 
 pub struct SnapshotManager {
   master_key : Bytes
@@ -125,16 +140,18 @@ pub struct TransactionManager {
   mut in_tx : Bool
 }
 pub fn TransactionManager::begin(Self) -> Unit
-pub fn TransactionManager::commit(Self) -> Int
+pub fn TransactionManager::commit(Self) -> Int32
 pub fn TransactionManager::new(EncryptedDatabase) -> Self
 pub fn TransactionManager::record_insert(Self, Document) -> Unit
 pub fn TransactionManager::rollback(Self) -> Unit
 
+#derive(@debug.Debug)
 pub struct TxLogRecord {
   op_type : String
-  doc_id : Int
+  doc_id : Int32
   keyword : String
-} derive(@debug.Debug)
+}
+pub fn TxLogRecord::to_repr(Self) -> @debug.Repr
 
 // Type aliases
 

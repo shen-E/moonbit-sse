@@ -1,6 +1,6 @@
 ///|
 /// CLI Demonstration Entrypoint for moonbit-sse
-fn main {
+fn main raise {
   println("=================================================================")
   println("  moonbit-sse: Searchable Symmetric Encryption & Privacy IR     ")
   println("=================================================================")

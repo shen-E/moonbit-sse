@@ -7,15 +7,15 @@ import {
 }
 
 // Values
-pub fn compress_vbyte(Array[Int]) -> Bytes
+pub fn compress_vbyte(Array[Int32]) -> Bytes
 
-pub fn decompress_vbyte(Bytes) -> Array[Int]
+pub fn decompress_vbyte(Bytes) -> Array[Int32]
 
-pub fn delta_decode(Array[Int]) -> Array[Int]
+pub fn delta_decode(Array[Int32]) -> Array[Int32]
 
-pub fn delta_encode(Array[Int]) -> Array[Int]
+pub fn delta_encode(Array[Int32]) -> Array[Int32]
 
-pub fn evaluate_bool_query(ForwardSecureClient, ForwardSecureServer, Array[Int], BoolQuery) -> SearchResult
+pub fn evaluate_bool_query(ForwardSecureClient, ForwardSecureServer, Array[Int32], BoolQuery) -> SearchResult
 
 pub fn search_conjunctive(ForwardSecureClient, ForwardSecureServer, Array[String]) -> SearchResult
 
@@ -26,66 +26,72 @@ pub fn search_disjunctive(ForwardSecureClient, ForwardSecureServer, Array[String
 // Types and methods
 pub struct BackwardSecureEngine {
   client : ForwardSecureClient
-  revocation_list : Map[String, Array[Int]]
+  revocation_list : Map[String, Array[Int32]]
 }
-pub fn BackwardSecureEngine::delete(Self, ForwardSecureServer, String, Int) -> Unit
-pub fn BackwardSecureEngine::insert(Self, ForwardSecureServer, String, Int) -> Unit
+pub fn BackwardSecureEngine::delete(Self, ForwardSecureServer, String, Int32) -> Unit
+pub fn BackwardSecureEngine::insert(Self, ForwardSecureServer, String, Int32) -> Unit
 pub fn BackwardSecureEngine::new(Bytes) -> Self
 pub fn BackwardSecureEngine::search(Self, ForwardSecureServer, String) -> SearchResult
 
 pub struct BloomFilter {
   bitset : FixedArray[UInt64]
-  num_bits : Int
-  num_hashes : Int
+  num_bits : Int32
+  num_hashes : Int32
   key : Bytes
 }
 pub fn BloomFilter::add(Self, String) -> Unit
 pub fn BloomFilter::contains(Self, String) -> Bool
-pub fn BloomFilter::new(Int, Int, Bytes) -> Self
+pub fn BloomFilter::new(Int32, Int32, Bytes) -> Self
 
+#derive(@debug.Debug)
 pub(all) enum BoolQuery {
   Term(String)
   And(BoolQuery, BoolQuery)
   Or(BoolQuery, BoolQuery)
   Not(BoolQuery)
-} derive(@debug.Debug)
+}
+pub fn BoolQuery::to_repr(Self) -> @debug.Repr
 
 pub struct DistributedIndexCoordinator {
   shards : Array[IndexShard]
   client : ForwardSecureClient
-  num_shards : Int
+  num_shards : Int32
 }
-pub fn DistributedIndexCoordinator::insert(Self, String, Int) -> Unit
-pub fn DistributedIndexCoordinator::new(Bytes, Int) -> Self
+pub fn DistributedIndexCoordinator::insert(Self, String, Int32) -> Unit
+pub fn DistributedIndexCoordinator::new(Bytes, Int32) -> Self
 pub fn DistributedIndexCoordinator::search_distributed(Self, String) -> SearchResult
 
+#derive(@debug.Debug)
 pub struct EncryptedEntry {
   addr : Bytes
   val : Bytes
   proof : Bytes
-} derive(@debug.Debug)
+}
 pub fn EncryptedEntry::new(Bytes, Bytes, Bytes) -> Self
+pub fn EncryptedEntry::to_repr(Self) -> @debug.Repr
 
 pub struct FastEngine {
   client_states : Map[String, FastState]
   master_key : Bytes
 }
-pub fn FastEngine::insert(Self, ForwardSecureServer, String, Int) -> Unit
+pub fn FastEngine::insert(Self, ForwardSecureServer, String, Int32) -> Unit
 pub fn FastEngine::new(Bytes) -> Self
 pub fn FastEngine::search(Self, ForwardSecureServer, String) -> SearchResult
 
+#derive(@debug.Debug)
 pub struct FastState {
-  counter : Int
+  counter : Int32
   state_key : Bytes
-} derive(@debug.Debug)
+}
+pub fn FastState::to_repr(Self) -> @debug.Repr
 
 pub struct ForwardSecureClient {
   trapdoor_gen : @trapdoor.TrapdoorGenerator
   master_key : Bytes
-  state_map : Map[String, Int]
+  state_map : Map[String, Int32]
 }
-pub fn ForwardSecureClient::delete(Self, ForwardSecureServer, String, Int) -> Unit
-pub fn ForwardSecureClient::insert(Self, ForwardSecureServer, String, Int) -> Unit
+pub fn ForwardSecureClient::delete(Self, ForwardSecureServer, String, Int32) -> Unit
+pub fn ForwardSecureClient::insert(Self, ForwardSecureServer, String, Int32) -> Unit
 pub fn ForwardSecureClient::new(Bytes) -> Self
 pub fn ForwardSecureClient::search(Self, ForwardSecureServer, String) -> SearchResult
 
@@ -95,61 +101,69 @@ pub struct ForwardSecureServer {
 pub fn ForwardSecureServer::new() -> Self
 
 pub struct IndexShard {
-  shard_id : Int
+  shard_id : Int32
   server : ForwardSecureServer
 }
 
+#derive(@debug.Debug)
 pub struct IndexStats {
-  total_keywords : Int
-  total_entries : Int
-  num_inserts : Int
-  num_deletes : Int
-} derive(@debug.Debug)
-pub fn IndexStats::new(Int, Int, Int, Int) -> Self
+  total_keywords : Int32
+  total_entries : Int32
+  num_inserts : Int32
+  num_deletes : Int32
+}
+pub fn IndexStats::new(Int32, Int32, Int32, Int32) -> Self
+pub fn IndexStats::to_repr(Self) -> @debug.Repr
 
 pub struct PhraseIndexEngine {
   client : ForwardSecureClient
   server : ForwardSecureServer
 }
-pub fn PhraseIndexEngine::index_position(Self, String, Int, Int) -> Unit
+pub fn PhraseIndexEngine::index_position(Self, String, Int32, Int32) -> Unit
 pub fn PhraseIndexEngine::new(Bytes) -> Self
-pub fn PhraseIndexEngine::search_phrase(Self, String, String, Int) -> SearchResult
+pub fn PhraseIndexEngine::search_phrase(Self, String, String, Int32) -> SearchResult
 
+#derive(@debug.Debug)
 pub struct PositionalPosting {
-  doc_id : Int
-  position : Int
-} derive(@debug.Debug)
-pub fn PositionalPosting::new(Int, Int) -> Self
+  doc_id : Int32
+  position : Int32
+}
+pub fn PositionalPosting::new(Int32, Int32) -> Self
+pub fn PositionalPosting::to_repr(Self) -> @debug.Repr
 
+#derive(@debug.Debug)
 pub struct Posting {
-  doc_id : Int
-  score : Int
-  op : Int
-} derive(@debug.Debug)
-pub fn Posting::new(Int, Int, Int) -> Self
+  doc_id : Int32
+  score : Int32
+  op : Int32
+}
+pub fn Posting::new(Int32, Int32, Int32) -> Self
+pub fn Posting::to_repr(Self) -> @debug.Repr
 
 pub struct RangeIndex {
   client : ForwardSecureClient
   server : ForwardSecureServer
   field_name : String
-  max_value : Int
+  max_value : Int32
 }
-pub fn RangeIndex::insert(Self, Int, Int) -> Unit
-pub fn RangeIndex::new(Bytes, String, Int) -> Self
-pub fn RangeIndex::search_range(Self, Int, Int) -> SearchResult
+pub fn RangeIndex::insert(Self, Int32, Int32) -> Unit
+pub fn RangeIndex::new(Bytes, String, Int32) -> Self
+pub fn RangeIndex::search_range(Self, Int32, Int32) -> SearchResult
 
+#derive(@debug.Debug)
 pub struct SearchResult {
-  doc_ids : Array[Int]
-  scores : Array[Int]
-  num_matches : Int
-} derive(@debug.Debug)
-pub fn SearchResult::new(Array[Int], Array[Int]) -> Self
+  doc_ids : Array[Int32]
+  scores : Array[Int32]
+  num_matches : Int32
+}
+pub fn SearchResult::new(Array[Int32], Array[Int32]) -> Self
+pub fn SearchResult::to_repr(Self) -> @debug.Repr
 
 pub struct StaticSseClient {
   trapdoor_gen : @trapdoor.TrapdoorGenerator
   enc_key : Bytes
 }
-pub fn StaticSseClient::build_index(Self, Map[String, Array[Int]]) -> StaticSseServer
+pub fn StaticSseClient::build_index(Self, Map[String, Array[Int32]]) -> StaticSseServer
 pub fn StaticSseClient::new(Bytes) -> Self
 pub fn StaticSseClient::search(Self, StaticSseServer, String) -> SearchResult
 

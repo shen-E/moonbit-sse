@@ -1,6 +1,6 @@
 ///|
 test "leakage auditor" {
-  let auditor = LeakageAuditor::new()
+  let auditor = @engine.LeakageAuditor::new()
   auditor.observe_query("token_01")
   auditor.observe_query("token_02")
   auditor.observe_query("token_01")

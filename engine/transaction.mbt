@@ -1,10 +1,11 @@
 ///|
 /// Transaction Operation Log Record
+#derive(Debug)
 pub struct TxLogRecord {
   op_type : String
-  doc_id : Int
+  doc_id : Int32
   keyword : String
-} derive(Debug)
+}
 
 ///|
 /// In-memory transaction operation-log demo.
@@ -20,7 +21,7 @@ pub struct TransactionManager {
 ///|
 /// Create new TransactionManager
 pub fn TransactionManager::new(db : EncryptedDatabase) -> TransactionManager {
-  { db, log: [], in_tx: false }
+  { db, log: [], in_tx: false, }
 }
 
 ///|
@@ -37,14 +38,14 @@ pub fn TransactionManager::record_insert(
   doc : Document,
 ) -> Unit {
   if self.in_tx {
-    self.log.push({ op_type: "INSERT", doc_id: doc.id, keyword: doc.title })
+    self.log.push({ op_type: "INSERT", doc_id: doc.id, keyword: doc.title, })
     self.db.insert_document(doc)
   }
 }
 
 ///|
 /// Commit transaction
-pub fn TransactionManager::commit(self : TransactionManager) -> Int {
+pub fn TransactionManager::commit(self : TransactionManager) -> Int32 {
   let count = self.log.length()
   self.log.clear()
   self.in_tx = false
@@ -57,3 +58,6 @@ pub fn TransactionManager::rollback(self : TransactionManager) -> Unit {
   self.log.clear()
   self.in_tx = false
 }
+
+///|
+pub extend TxLogRecord with @debug.Debug::{to_repr}

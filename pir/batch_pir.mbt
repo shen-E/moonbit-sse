@@ -7,8 +7,8 @@ pub struct BatchPirCoordinator {
 ///|
 /// Create new BatchPirCoordinator
 pub fn BatchPirCoordinator::new(
-  num_records : Int,
-  record_size : Int,
+  num_records : Int32,
+  record_size : Int32,
   seed : Bytes,
 ) -> BatchPirCoordinator {
   let it_client = ItPirClient::new(num_records, record_size, seed)
@@ -20,7 +20,7 @@ pub fn BatchPirCoordinator::new(
 pub fn BatchPirCoordinator::batch_retrieve(
   self : BatchPirCoordinator,
   db : DatabaseVector,
-  target_indices : Array[Int],
+  target_indices : Array[Int32],
 ) -> Array[Bytes] {
   let results : Array[Bytes] = []
   for i in 0..<target_indices.length() {

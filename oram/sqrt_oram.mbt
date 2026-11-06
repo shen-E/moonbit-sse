@@ -1,21 +1,21 @@
 ///|
 /// Square-Root ORAM (Goldreich-Ostrovsky Scheme)
 pub struct SqrtOram {
-  num_elements : Int
-  block_size : Int
-  sqrt_capacity : Int
+  num_elements : Int32
+  block_size : Int32
+  sqrt_capacity : Int32
   main_memory : Array[Block]
   mut shelter : Array[Block]
   key : Bytes
   prg : @crypto.Prg
-  mut access_count : Int
+  mut access_count : Int32
 }
 
 ///|
 /// Create new Square-Root ORAM
 pub fn SqrtOram::new(
-  num_elements : Int,
-  block_size : Int,
+  num_elements : Int32,
+  block_size : Int32,
   master_key : Bytes,
 ) -> SqrtOram {
   let mut sqrt_c = 1
@@ -58,7 +58,7 @@ pub fn SqrtOram::rebuild_shuffle(self : SqrtOram) -> Unit {
 pub fn SqrtOram::access(
   self : SqrtOram,
   op : AccessOp,
-  block_id : Int,
+  block_id : Int32,
 ) -> Bytes {
   let mut found_data = Bytes::from_array(
     FixedArray::make(self.block_size, b'\x00'),
